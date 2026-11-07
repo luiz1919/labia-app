@@ -10,6 +10,10 @@ Unreleased by hand when you want them clearer.
 
 ## Unreleased
 
+_Nothing yet._
+
+## [v0.1.0] - 2026-11-08
+
 - First version: sign-in with a Firebase account and the direction picker ("De" / "A") saved
   per user, for Spanish ↔ English.
 - "¿Cómo se dice?" (How do you say it?) searches Labia's own content and links the query to
@@ -23,3 +27,5 @@ Unreleased by hand when you want them clearer.
   browsable by verb and particle.
 - Login, "Acerca de" (About) and the sync status come from firebase-app-kit's shared UI.
 - Installable PWA that opens offline.
+
+[v0.1.0]: https://github.com/luiz1919/labia-app/releases/tag/v0.1.0
