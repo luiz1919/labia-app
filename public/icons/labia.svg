@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Two overlapping speech bubbles: a conversation between two languages. -->
+  <rect width="512" height="512" rx="112" fill="#b4285a"/>
+  <path d="M136 112h152a40 40 0 0 1 40 40v88a40 40 0 0 1-40 40H196l-60 52v-52a40 40 0 0 1-40-40v-88a40 40 0 0 1 40-40z" fill="#f7c6d6"/>
+  <path d="M224 212h152a40 40 0 0 1 40 40v88a40 40 0 0 1-40 40v52l-60-52h-92a40 40 0 0 1-40-40v-88a40 40 0 0 1 40-40z" fill="#fff"/>
+  <rect x="228" y="268" width="148" height="22" rx="11" fill="#b4285a"/>
+  <rect x="228" y="312" width="100" height="22" rx="11" fill="#b4285a"/>
+</svg>

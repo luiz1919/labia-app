@@ -1,0 +1,19 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // users/{uid}: the user's preferences (the language pair). Language codes are checked by
+    // shape only (ISO 639: two or three lowercase letters), so adding a language to the app
+    // does not require new rules.
+    match /users/{uid} {
+      allow read, delete: if request.auth != null && request.auth.uid == uid;
+      allow create, update: if request.auth != null && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(['sourceLanguage', 'targetLanguage'])
+        && request.resource.data.sourceLanguage is string && request.resource.data.sourceLanguage.matches('^[a-z]{2,3}$')
+        && request.resource.data.targetLanguage is string && request.resource.data.targetLanguage.matches('^[a-z]{2,3}$')
+        && request.resource.data.sourceLanguage != request.resource.data.targetLanguage;
+    }
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

@@ -1,0 +1,68 @@
+import assert from 'node:assert/strict'
+import { readFileSync } from 'node:fs'
+import { after, before, beforeEach, test } from 'node:test'
+import { assertFails, assertSucceeds, initializeTestEnvironment } from '@firebase/rules-unit-testing'
+import { deleteDoc, doc, getDoc, setDoc } from 'firebase/firestore'
+
+const projectId = 'demo-labia'
+const ownerUid = 'settings-test-owner'
+const settingsPath = `users/${ownerUid}`
+const settings = { sourceLanguage: 'es', targetLanguage: 'en' }
+let environment
+
+before(async () => {
+  assert.equal(process.env.FIRESTORE_EMULATOR_HOST, '127.0.0.1:8087', 'Run through npm run test:rules; real Firebase is never used.')
+  environment = await initializeTestEnvironment({
+    projectId,
+    firestore: { host: '127.0.0.1', port: 8087, rules: readFileSync(new URL('../firestore.rules', import.meta.url), 'utf8') },
+  })
+})
+
+beforeEach(async () => { await environment.clearFirestore() })
+after(async () => { await environment?.cleanup() })
+
+function owner() {
+  return environment.authenticatedContext(ownerUid).firestore()
+}
+
+test('owner can save, change, read and delete their preferences', async () => {
+  const database = owner()
+  await assertSucceeds(setDoc(doc(database, settingsPath), settings))
+  await assertSucceeds(setDoc(doc(database, settingsPath), { targetLanguage: 'es', sourceLanguage: 'en' }, { merge: true }))
+  const saved = await assertSucceeds(getDoc(doc(database, settingsPath)))
+  assert.deepEqual(saved.data(), { sourceLanguage: 'en', targetLanguage: 'es' })
+  await assertSucceeds(deleteDoc(doc(database, settingsPath)))
+})
+
+test('languages not in the app yet are accepted when the code is well formed', async () => {
+  await assertSucceeds(setDoc(doc(owner(), settingsPath), { sourceLanguage: 'fr', targetLanguage: 'ast' }))
+})
+
+test('another user and anonymous visitors cannot read or modify the preferences', async () => {
+  await setDoc(doc(owner(), settingsPath), settings)
+  for (const context of [environment.authenticatedContext('other-user'), environment.unauthenticatedContext()]) {
+    const database = context.firestore()
+    await assertFails(getDoc(doc(database, settingsPath)))
+    await assertFails(setDoc(doc(database, settingsPath), settings))
+    await assertFails(deleteDoc(doc(database, settingsPath)))
+  }
+})
+
+test('malformed preferences are rejected', async () => {
+  const database = owner()
+  const invalid = [
+    { sourceLanguage: 'es', targetLanguage: 'es' },
+    { sourceLanguage: 'ES', targetLanguage: 'en' },
+    { sourceLanguage: 'es-ES', targetLanguage: 'en' },
+    { sourceLanguage: 'es' },
+    { sourceLanguage: 'es', targetLanguage: 7 },
+    { ...settings, extra: true },
+  ]
+  for (const data of invalid) await assertFails(setDoc(doc(database, settingsPath), data))
+})
+
+test('everything outside the user document is denied', async () => {
+  const database = owner()
+  await assertFails(setDoc(doc(database, `users/${ownerUid}/notebook/entry`), { term: 'hola' }))
+  await assertFails(getDoc(doc(database, 'languages/es')))
+})

@@ -1,0 +1,70 @@
+# Runs automatically on GitHub for every pull request and every push to main:
+# - lint, unit tests and the production build;
+# - the Firestore rules tests, in the local emulator (never against the real project).
+# A red cross on a commit means one of these failed; nothing is deployed from here.
+name: Checks
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+env:
+  # Read-only token for firebase-app-kit while that repo is private (empty if the secret does not
+  # exist; not needed once the repo is public). See "Continuous integration" in the commands guide.
+  KIT_TOKEN: ${{ secrets.FIREBASE_APP_KIT_TOKEN }}
+
+jobs:
+  lint-test-build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Without this, git would send this repo's own token when downloading firebase-app-kit.
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: npm
+      - name: Allow npm to download firebase-app-kit
+        if: env.KIT_TOKEN != ''
+        run: |
+          git config --global url."https://x-access-token:${KIT_TOKEN}@github.com/".insteadOf "ssh://git@github.com/"
+          git config --global --add url."https://x-access-token:${KIT_TOKEN}@github.com/".insteadOf "https://github.com/"
+      - run: npm ci
+      - run: npm run lint
+      - run: npm test
+      - run: npm run build
+
+  firestore-rules:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Without this, git would send this repo's own token when downloading firebase-app-kit.
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: npm
+      - name: Allow npm to download firebase-app-kit
+        if: env.KIT_TOKEN != ''
+        run: |
+          git config --global url."https://x-access-token:${KIT_TOKEN}@github.com/".insteadOf "ssh://git@github.com/"
+          git config --global --add url."https://x-access-token:${KIT_TOKEN}@github.com/".insteadOf "https://github.com/"
+      - run: npm ci
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/firebase/emulators
+          key: firebase-emulators-${{ runner.os }}
+      - run: npm install --global firebase-tools@15
+      - run: npm run test:rules
