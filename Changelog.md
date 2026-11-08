@@ -10,6 +10,10 @@ Unreleased by hand when you want them clearer.
 
 ## Unreleased
 
+_Nothing yet._
+
+## [v0.2.1] - 2026-11-08
+
 - Fixes for "Escuchar" (Listen) on phones: the app no longer cancels the speech engine right before
   speaking (Safari and Chrome on Android dropped the new word), resumes it if Android left it
   paused, and keeps the utterance alive while it plays. Tapping again quickly only plays the
@@ -50,5 +54,6 @@ Unreleased by hand when you want them clearer.
 - Login, "Acerca de" (About) and the sync status come from firebase-app-kit's shared UI.
 - Installable PWA that opens offline.
 
+[v0.2.1]: https://github.com/luiz1919/labia-app/compare/v0.1.0...v0.2.1
 [v0.2.0]: https://github.com/luiz1919/labia-app/compare/v0.1.0...v0.2.0
 [v0.1.0]: https://github.com/luiz1919/labia-app/releases/tag/v0.1.0
