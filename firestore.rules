@@ -35,6 +35,24 @@ service cloud.firestore {
           || request.resource.data.lastProvider in ['anthropic', 'gemini', 'openai'])
         && (!('anthropicFallback' in request.resource.data) || request.resource.data.anthropicFallback is bool);
     }
+    // users/{uid}/pantry/{itemId}: words saved to look up later ("Despensa"). createdAt is set
+    // by the server when the word is added and never changes.
+    function validPantryItem(data) {
+      return data.keys().hasOnly(['text', 'lang', 'createdAt', 'reviewed'])
+        && data.keys().hasAll(['text', 'lang', 'createdAt', 'reviewed'])
+        && data.text is string && data.text.size() > 0 && data.text.size() <= 100
+        && data.lang is string && data.lang.matches('^[a-z]{2,3}$')
+        && data.createdAt is timestamp
+        && data.reviewed is bool;
+    }
+    match /users/{uid}/pantry/{itemId} {
+      allow read, delete: if request.auth != null && request.auth.uid == uid;
+      allow create: if request.auth != null && request.auth.uid == uid
+        && validPantryItem(request.resource.data) && request.resource.data.createdAt == request.time;
+      allow update: if request.auth != null && request.auth.uid == uid
+        && validPantryItem(request.resource.data) && request.resource.data.createdAt == resource.data.createdAt
+        && request.resource.data.lang == resource.data.lang;
+    }
     match /{document=**} {
       allow read, write: if false;
     }

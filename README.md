@@ -16,7 +16,7 @@ English translation the first time.
 Every screen except "Ajustes" (Settings) shares the direction picker at the top: "De" (From)
 and "A" (To), with a button to swap them. The direction is saved per user in Firestore, so it is
 the same on every device; offline, the change is kept on the device and uploaded later. The
-bottom bar has four tabs:
+bottom bar has five tabs:
 
 - **"Buscar" (Search), "¿Cómo se dice?" (How do you say it?)**: type a word, a verb or an
   expression. Labia's own content shows while typing (false friends first, as a warning, then
@@ -50,6 +50,28 @@ bottom bar has four tabs:
     word it understood.
   - "Practica cualquier frase" (Practise any sentence): listen to any text, slowly too, and say
     it to check it.
+- **"Despensa" (Pantry)**: words saved to look up later, in the "De" (From) language. Made for
+  reading a book aloud and translating it on the fly with your hands busy:
+  - "Manos libres" (Hands-free): one tap and the microphone keeps listening; saying the keyword
+    and the word ("apunta zarzamora"; in English, "note bramble") saves it, with a beep and a
+    vibration. Only what follows the keyword is saved, so reading aloud saves nothing. The
+    keyword is in the language of the words (the one being read), while the reader mostly
+    speaks the other one, so it rarely comes up by chance. "apunta… zarzamora" with a pause
+    works too, and so do "apúntame", "anota", "la palabra…" and a leading article (dropped).
+    The screen stays on while listening (Screen Wake Lock); recognition restarts on its own
+    after each silence and when coming back to the app. It uses the browser's speech
+    recognition: in Chrome the audio goes to Google's service, as with the keyboard microphone.
+  - "Añadir una palabra" (Add a word): "Mantén pulsado y habla" (hold and speak) listens only
+    while the button is held (touch, mouse, or Space/Enter) and shows the words live; on
+    release it proposes what it understood, editable, with the recognizer's other guesses
+    ("¿O era…?") and "Guardar" (Save) or "Descartar" (Discard). Pauses while holding are fine:
+    the words add up. Disabled while "Manos libres" is on (one microphone at a time). Words can
+    also be typed.
+  - "Por consultar" (To look up): tap a word to see the answer of the first search engine of
+    the user's order, open it in "Buscar", correct it (misheard words), delete it or tick it
+    as looked up ("Consultadas", which can be emptied). Saving a word already there does not
+    repeat it; if it had been looked up, it goes back to the list.
+  - Installed on Android, a long press on the icon has a "Despensa" shortcut.
 - **"Asistente" (Assistant)**, with the user's own AI key:
   - "Punta de la lengua" (Tip of the tongue): describe a word you cannot remember and get the
     most likely candidates, with translation, nuance and an example ("Buscar" opens it in the
@@ -155,10 +177,11 @@ language does not need new rules.
 |----------|---------|
 | `users/{uid}` | `{ sourceLanguage, targetLanguage }`: the user's last direction |
 | `users/{uid}/settings/ai` | `{ providers: { gemini?, openai?, anthropic?: { apiKey, model, models } }, lastProvider, anthropicFallback }`: the user's AI keys (firebase-app-kit/ai shape) |
+| `users/{uid}/pantry/{id}` | `{ text, lang, createdAt, reviewed }`: a word of the "Despensa" (up to 100 characters; `createdAt` set by the server, never changed) |
 
 Everything else is denied by [firestore.rules](firestore.rules). The accents are not in
-Firestore: they are stored on the device (`localStorage`, key `labia.accents`). New collections (a notebook
-of saved lookups, for example) need their own rules and tests.
+Firestore: they are stored on the device (`localStorage`, key `labia.accents`). New collections need
+their own rules and tests.
 
 ## Access
 

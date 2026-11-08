@@ -1,11 +1,12 @@
 // The app's sections. The current one lives in the URL hash (#/expresiones), so the phone's back
-// button and links work without a router. The bottom bar has four tabs; the content sections
+// button and links work without a router. The bottom bar has five tabs; the content sections
 // hang from "Aprender" (Learn) and "Ajustes" (Settings) from the header.
 
 export const TABS = [
   { id: 'buscar', label: 'Buscar' },
   { id: 'aprender', label: 'Aprender' },
   { id: 'pronunciar', label: 'Pronunciar' },
+  { id: 'despensa', label: 'Despensa' },
   { id: 'asistente', label: 'Asistente' },
 ] as const
 
@@ -19,6 +20,7 @@ export const SCREENS = [
   { id: 'diferencias', label: 'Diferencias', tab: 'aprender' },
   { id: 'phrasal-verbs', label: 'Phrasal verbs', tab: 'aprender' },
   { id: 'pronunciar', label: 'Pronunciar', tab: 'pronunciar' },
+  { id: 'despensa', label: 'Despensa', tab: 'despensa' },
   { id: 'asistente', label: 'Asistente', tab: 'asistente' },
   { id: 'ajustes', label: 'Ajustes', tab: null },
 ] as const satisfies readonly { id: string; label: string; tab: TabId | null }[]

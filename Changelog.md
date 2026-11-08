@@ -10,7 +10,14 @@ Unreleased by hand when you want them clearer.
 
 ## Unreleased
 
-_Nothing yet._
+- New "Despensa" (Pantry) tab: save words to look up later. "Manos libres" (hands-free) keeps
+  the microphone on, for example while reading a book aloud, and saves whatever follows
+  "apunta" ("apunta zarzamora"; "note" in English) with a beep, keeping the screen on.
+  "Mantén pulsado y habla" listens only while the button is held and, on release, proposes
+  what it understood (editable, with other guesses) to save or discard. Words can also be
+  typed. Tap a saved word to see its translation, open it in
+  "Buscar", correct it, delete it or tick it as looked up. Saved in Firestore, per user.
+- Android shortcut to the Despensa (long press on the app icon).
 
 ## [v0.3.1] - 2026-11-08
 

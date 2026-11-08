@@ -19,6 +19,7 @@ import ConfusablesScreen from './screens/ConfusablesScreen'
 import FalseFriendsScreen from './screens/FalseFriendsScreen'
 import IdiomsScreen from './screens/IdiomsScreen'
 import LearnScreen from './screens/LearnScreen'
+import PantryScreen from './screens/PantryScreen'
 import PhrasalVerbsScreen from './screens/PhrasalVerbsScreen'
 import PronounceScreen from './screens/PronounceScreen'
 import SearchScreen from './screens/SearchScreen'
@@ -87,6 +88,7 @@ function Home({ user, loggingOut, onLogout }: { user: User; loggingOut: boolean;
         {screen === 'diferencias' && <ConfusablesScreen pair={pair} />}
         {screen === 'phrasal-verbs' && <PhrasalVerbsScreen pair={pair} />}
         {screen === 'pronunciar' && <PronounceScreen pair={pair} />}
+        {screen === 'despensa' && <PantryScreen uid={user.uid} pair={pair} settings={ai.settings} onSearch={searchFor} />}
         {screen === 'asistente' && <AssistantScreen pair={pair} settings={ai.settings} ready={ai.ready} onSearch={searchFor} />}
         {screen === 'ajustes' && <SettingsScreen pair={pair} settings={ai.settings} actions={ai.actions} error={ai.error} />}
       </main>

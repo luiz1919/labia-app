@@ -1,4 +1,4 @@
-import { AudioLines, BookOpen, Search, Sparkles } from 'lucide-react'
+import { Amphora, AudioLines, BookOpen, Search, Sparkles } from 'lucide-react'
 import { screenHash, TABS } from '../screens'
 import type { TabId } from '../screens'
 
@@ -6,6 +6,7 @@ const ICONS = {
   buscar: Search,
   aprender: BookOpen,
   pronunciar: AudioLines,
+  despensa: Amphora,
   asistente: Sparkles,
 } as const satisfies Record<TabId, unknown>
 

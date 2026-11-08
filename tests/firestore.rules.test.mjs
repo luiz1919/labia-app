@@ -2,7 +2,7 @@ import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { after, before, beforeEach, test } from 'node:test'
 import { assertFails, assertSucceeds, initializeTestEnvironment } from '@firebase/rules-unit-testing'
-import { deleteDoc, deleteField, doc, getDoc, setDoc } from 'firebase/firestore'
+import { deleteDoc, deleteField, doc, getDoc, serverTimestamp, setDoc, Timestamp, updateDoc } from 'firebase/firestore'
 
 const projectId = 'demo-labia'
 const ownerUid = 'settings-test-owner'
@@ -91,6 +91,45 @@ test('nobody else can read the AI keys, and malformed AI settings are rejected',
     { lastProvider: 'mistral' },
     { anthropicFallback: 'yes' },
   ]) await assertFails(setDoc(doc(database, aiPath), invalid))
+})
+
+const pantryPath = `users/${ownerUid}/pantry/word-1`
+const pantryWord = () => ({ text: 'zarzamora', lang: 'es', createdAt: serverTimestamp(), reviewed: false })
+
+test('owner can add, look up, correct and delete words in their pantry', async () => {
+  const database = owner()
+  await assertSucceeds(setDoc(doc(database, pantryPath), pantryWord()))
+  await assertSucceeds(updateDoc(doc(database, pantryPath), { reviewed: true }))
+  await assertSucceeds(updateDoc(doc(database, pantryPath), { text: 'zarzamoras' }))
+  const saved = (await assertSucceeds(getDoc(doc(database, pantryPath)))).data()
+  assert.equal(saved.text, 'zarzamoras')
+  assert.equal(saved.reviewed, true)
+  await assertSucceeds(deleteDoc(doc(database, pantryPath)))
+})
+
+test('nobody else can see or change the pantry, and malformed words are rejected', async () => {
+  await setDoc(doc(owner(), pantryPath), pantryWord())
+  for (const context of [environment.authenticatedContext('other-user'), environment.unauthenticatedContext()]) {
+    const database = context.firestore()
+    await assertFails(getDoc(doc(database, pantryPath)))
+    await assertFails(setDoc(doc(database, `users/${ownerUid}/pantry/word-2`), pantryWord()))
+    await assertFails(updateDoc(doc(database, pantryPath), { reviewed: true }))
+    await assertFails(deleteDoc(doc(database, pantryPath)))
+  }
+  const database = owner()
+  const newPath = `users/${ownerUid}/pantry/word-3`
+  for (const invalid of [
+    { ...pantryWord(), text: '' },
+    { ...pantryWord(), text: 'x'.repeat(101) },
+    { ...pantryWord(), lang: 'Spanish' },
+    { ...pantryWord(), reviewed: 'no' },
+    { ...pantryWord(), extra: true },
+    { text: 'zarzamora', lang: 'es', createdAt: serverTimestamp() },
+    { ...pantryWord(), createdAt: Timestamp.fromMillis(0) },
+  ]) await assertFails(setDoc(doc(database, newPath), invalid))
+  await assertFails(updateDoc(doc(database, pantryPath), { createdAt: Timestamp.fromMillis(0) }))
+  await assertFails(updateDoc(doc(database, pantryPath), { lang: 'en' }))
+  await assertFails(updateDoc(doc(database, pantryPath), { text: 42 }))
 })
 
 test('everything outside the user documents is denied', async () => {
