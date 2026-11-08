@@ -10,7 +10,13 @@ Unreleased by hand when you want them clearer.
 
 ## Unreleased
 
-_Nothing yet._
+- Fixes for "Escuchar" (Listen) on phones: the app no longer cancels the speech engine right before
+  speaking (Safari and Chrome on Android dropped the new word), resumes it if Android left it
+  paused, and keeps the utterance alive while it plays. Tapping again quickly only plays the
+  last word.
+- Better voices: Apple's novelty voices (Bells, Bad News, Albert...) are never used, and older
+  or character voices (Fred, Eddy, Grandma...) only when there is nothing else.
+- "Pronunciar" reminds you to turn the volume up and, on iPhone, the silent mode off.
 
 ## [v0.2.0] - 2026-11-08
 

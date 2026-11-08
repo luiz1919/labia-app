@@ -48,9 +48,19 @@ export interface VoiceLike {
   default?: boolean
 }
 
+// Apple's novelty voices (sound effects, robots, singing) are listed as normal English voices on
+// macOS and iOS: never pick them for teaching pronunciation.
+const NOVELTY_VOICES = /^(Albert|Bad News|Bahh|Bells|Boing|Bubbles|Cellos|Deranged|Good News|Hysterical|Jester|Organ|Pipe Organ|Superstar|Trinoids|Whisper|Wobble|Zarvox)\b/i
+
+// Better-sounding voices when several match equally well, and Apple's older or character voices
+// (they work, but sound robotic or like a cartoon), used only when nothing else fits.
+const QUALITY_VOICES = /(Google|Enhanced|Premium|Natural|Neural|Siri)/i
+const PLAIN_VOICES = /^(Eddy|Flo|Fred|Grandma|Grandpa|Junior|Kathy|Ralph|Reed|Rocko|Sandy|Shelley)\b/i
+
 /**
  * Best voice for a locale: same locale first, then same language; within each group, voices
- * installed on the device (they work offline), then the default one.
+ * installed on the device (they work offline), the default one, then the better-sounding ones.
+ * Null when nothing fits: the browser then picks one from the utterance's language.
  */
 export function pickVoice<T extends VoiceLike>(voices: readonly T[], locale: string): T | null {
   const wanted = locale.toLowerCase().replace('_', '-')
@@ -58,9 +68,10 @@ export function pickVoice<T extends VoiceLike>(voices: readonly T[], locale: str
   const rank = (voice: T) => {
     const lang = voice.lang.toLowerCase().replace('_', '-')
     const match = lang === wanted ? 0 : lang.split('-')[0] === language ? 1 : 2
-    return match * 4 + (voice.localService ? 0 : 2) + (voice.default ? 0 : 1)
+    const quality = QUALITY_VOICES.test(voice.name) ? 0 : PLAIN_VOICES.test(voice.name) ? 2 : 1
+    return match * 16 + (voice.localService ? 0 : 8) + (voice.default ? 0 : 4) + quality
   }
-  const candidates = voices.filter(voice => rank(voice) < 8)
+  const candidates = voices.filter(voice => !NOVELTY_VOICES.test(voice.name) && rank(voice) < 32)
   return candidates.sort((first, second) => rank(first) - rank(second))[0] ?? null
 }
 
@@ -76,16 +87,38 @@ export function canSpeak(): boolean {
   return typeof window !== 'undefined' && 'speechSynthesis' in window
 }
 
+/** The utterance being spoken: Chrome may garbage-collect one that nothing references and cut it off. */
+let current: SpeechSynthesisUtterance | null = null
+/** A start delayed after cancel(): a newer tap replaces it. */
+let delayedStart: number | undefined
+
 export function speak(text: string, locale: string, rate = 0.9): void {
   if (!canSpeak() || !text.trim()) return
   const synth = window.speechSynthesis
-  synth.cancel()
   const utterance = new SpeechSynthesisUtterance(text)
   utterance.lang = locale
   utterance.rate = rate
   const voice = pickVoice(synth.getVoices(), locale)
   if (voice) utterance.voice = voice
-  synth.speak(utterance)
+  current = utterance
+  utterance.onend = utterance.onerror = () => {
+    if (current === utterance) current = null
+  }
+  const start = () => {
+    // Chrome on Android can stay paused after the app has been in the background.
+    if (synth.paused) synth.resume()
+    synth.speak(utterance)
+  }
+  // Safari and Chrome on Android drop an utterance queued right after cancel(): only cancel when
+  // something is playing, and give it a moment. Otherwise speak at once, inside the tap (iOS
+  // only lets a page start speaking from a user gesture).
+  window.clearTimeout(delayedStart)
+  if (synth.speaking || synth.pending) {
+    synth.cancel()
+    delayedStart = window.setTimeout(start, 150)
+  } else {
+    start()
+  }
 }
 
 interface RecognitionResultEvent { results: ArrayLike<ArrayLike<{ transcript: string }>> }

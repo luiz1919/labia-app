@@ -20,6 +20,22 @@ test('the voice for a locale prefers the same accent, then the same language, th
   assert.equal(pickVoice([], 'en-GB'), null)
 })
 
+test('Apple novelty voices are never picked, and better voices win a tie', () => {
+  const apple = [
+    { lang: 'en-US', name: 'Albert', localService: true },
+    { lang: 'en-US', name: 'Bad News', localService: true },
+    { lang: 'en-US', name: 'Eddy (English (United States))', localService: true },
+    { lang: 'en-US', name: 'Fred', localService: true },
+    { lang: 'en-US', name: 'Samantha', localService: true },
+    { lang: 'es-ES', name: 'Mónica', localService: true, default: true },
+  ]
+  assert.equal(pickVoice(apple, 'en-US')?.name, 'Samantha', 'normal voices before the old or character ones')
+  assert.equal(pickVoice([...apple, { lang: 'en-US', name: 'Ava (Premium)', localService: true }], 'en-US')?.name, 'Ava (Premium)')
+  assert.equal(pickVoice(apple.slice(0, 2), 'en-US'), null, 'only novelty voices: let the browser choose')
+  assert.equal(pickVoice(apple.slice(0, 4), 'en-US')?.name, 'Eddy (English (United States))', 'a plain voice is still better than none')
+  assert.equal(pickVoice(apple, 'en-GB')?.name, 'Samantha', 'same language when the accent is missing')
+})
+
 test('saved accents are read back and anything unknown falls back to the default', () => {
   assert.deepEqual(parseAccents(null), DEFAULT_ACCENTS)
   assert.deepEqual(parseAccents('{"en":"en-US","es":"es-MX"}'), { en: 'en-US', es: 'es-MX' })

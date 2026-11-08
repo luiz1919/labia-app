@@ -173,7 +173,7 @@ export default function PronounceScreen({ pair }: { pair: LanguagePair }) {
   return (
     <section className="screen" aria-labelledby="pronounce-title">
       <h1 id="pronounce-title">Pronunciar</h1>
-      <p className="screen-intro">Los sonidos del {languageName(lang).toLowerCase()} que más cuestan, con la voz de tu dispositivo. El acento se cambia en Ajustes.</p>
+      <p className="screen-intro">Los sonidos del {languageName(lang).toLowerCase()} que más cuestan, con la voz de tu dispositivo. El acento se cambia en Ajustes. ¿No oyes nada? Sube el volumen y, en iPhone, quita el modo silencio.</p>
       {!canSpeak() && <p className="error-message">Este navegador no puede leer en voz alta.</p>}
       {!canRecognize() && <p className="card-note">Este navegador no reconoce la voz: puedes escuchar, pero no comprobar cómo lo dices (prueba con Chrome).</p>}
       {pairs.length > 0 && <MinimalPairPractice key={`${lang}-${locale}`} pairs={pairs} lang={lang} locale={locale} />}
