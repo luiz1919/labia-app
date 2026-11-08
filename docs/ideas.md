@@ -5,8 +5,9 @@ ideas. Nothing here is decided; pick a few for each version. Examples are Spanis
 
 ## Features
 
-Done in the first version: 1 to 4 (screens "Expresiones", "Falsos amigos", "Diferencias" and
-"Phrasal verbs", all searchable from "Buscar").
+Done: 1 to 4 in v0.1.0 (screens "Expresiones", "Falsos amigos", "Diferencias" and "Phrasal
+verbs", all searchable from "Buscar"); 6 to 9 after it ("Pronunciar", "Asistente", and "Pegar",
+"Foto" and the share target in "Buscar"). Pending: 5 (conjugator) and 10 (notebook).
 
 1. **Idioms: the real equivalent, not the literal translation.** "Estar en las nubes" →
    *to have your head in the clouds*; "costar un ojo de la cara" → *to cost an arm and a leg*.

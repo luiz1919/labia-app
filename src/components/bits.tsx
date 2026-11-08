@@ -4,6 +4,7 @@ import { Search } from 'lucide-react'
 import { REGION_LABELS, REGISTER_LABELS } from '../data/types'
 import type { Region, Register, Translations } from '../data/types'
 import type { LanguageCode } from '../languages'
+import SpeakButton from './SpeakButton'
 
 /** Register (when not neutral) and regions of an expression. */
 export function Badges({ register, regions }: { register?: Register; regions?: readonly Region[] }) {
@@ -23,7 +24,7 @@ export function Example({ example, first, second }: { example?: Translations; fi
   if (!original && !translation) return null
   return (
     <p className="example">
-      {original && <span lang={first}>{original}</span>}
+      {original && <span className="example-original"><span lang={first}>{original}</span><SpeakButton text={original} lang={first} size={16} /></span>}
       {translation && <span className="example-translation" lang={second}>{translation}</span>}
     </p>
   )

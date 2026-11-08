@@ -13,35 +13,77 @@ English translation the first time.
 
 ## What it does
 
-Every screen shares the direction picker at the top: "De" (From) and "A" (To), with a button to
-swap them. The direction is saved per user in Firestore, so it is the same on every device;
-offline, the change is kept on the device and uploaded later. The bottom bar switches between:
+Every screen except "Ajustes" (Settings) shares the direction picker at the top: "De" (From)
+and "A" (To), with a button to swap them. The direction is saved per user in Firestore, so it is
+the same on every device; offline, the change is kept on the device and uploaded later. The
+bottom bar has four tabs:
 
 - **"Buscar" (Search), "¿Cómo se dice?" (How do you say it?)**: type a word, a verb or an
   expression. The app searches its own content (false friends first, as a warning, then idioms,
   phrasal verbs and differences) and links the query to WordReference, Reverso Context and
-  "Google Traductor" (Google Translate), opened in a new tab. These are plain links: no API, no
-  keys and no scraping.
-- **"Expresiones" (Idioms)**: the real equivalent in the other language, not the literal
-  translation. Each one shows the meaning, the equivalents with their word-for-word translation
-  ("Literalmente"), the register ("Coloquial" informal, "Vulgar", "Formal"), the region (Spain,
-  Latin America, UK, US) and an example.
-- **"Falsos amigos" (False friends)**: words that look alike but mean something else (*actually*
-  ≠ *actualmente*), with what each one really means and examples. Searching one of them in
-  "Buscar" shows the warning too.
-- **"Diferencias" (Differences)**: words that are easy to mix up (*make/do*, *say/tell*,
-  *since/for*, ser/estar, por/para...): the short rule, examples and a mini quiz ("Ponte a
-  prueba", test yourself). The language you translate into comes first. Searching the word
-  that leads to them also finds them ("hacer" → make / do).
-- **"Phrasal verbs"**: searchable in English (*get over*) or by their meaning (superar), and
-  browsable by verb and by particle. Each meaning says whether the object can go in the middle
-  ("Separable": *turn it off*).
+  "Google Traductor" (Google Translate), opened in a new tab (plain links: no API, no keys, no
+  scraping). A single English word also gets its pronunciation: IPA and recordings by accent
+  from the [Free Dictionary API](https://dictionaryapi.dev) (free, no key; recordings from
+  Wikimedia Commons). Text can come from elsewhere:
+  - "Pegar" (Paste): the clipboard.
+  - "Foto" (Photo): the AI reads the text in a photo (a sign, a menu) and you pick the line to
+    search. Needs an AI set up in "Ajustes".
+  - "Compartir" (Share) › Labia from any app, with the PWA installed on Android (Web Share
+    Target). iOS has no share target: use "Pegar" there.
+- **"Aprender" (Learn)**: the bundled content, one tile per section (each one has a back link):
+  - "Expresiones" (Idioms): the real equivalent in the other language, not the literal
+    translation, with the meaning, the word-for-word translation ("Literalmente"), the register
+    ("Coloquial" informal, "Vulgar", "Formal"), the region (Spain, Latin America, UK, US) and an
+    example.
+  - "Falsos amigos" (False friends): words that look alike but mean something else (*actually*
+    ≠ *actualmente*), with what each one really means and examples.
+  - "Diferencias" (Differences): words that are easy to mix up (*make/do*, ser/estar...), with
+    the short rule, examples and a mini quiz ("Ponte a prueba", test yourself).
+  - "Phrasal verbs": searchable in English (*get over*) or by their meaning (superar), and
+    browsable by verb and by particle.
+- **"Pronunciar" (Pronounce)**, in the language you translate into:
+  - "Escucha y elige" (Listen and choose): minimal pairs (*ship/sheep*, pero/perro). The phone
+    says one of the two words and you pick which; then the hint on how to make the sound, both
+    words to compare, and "Ahora dilo tú" (Now you say it): the app listens and tells you which
+    word it understood.
+  - "Practica cualquier frase" (Practise any sentence): listen to any text, slowly too, and say
+    it to check it.
+- **"Asistente" (Assistant)**, with the user's own AI key:
+  - "Punta de la lengua" (Tip of the tongue): describe a word you cannot remember and get the
+    most likely candidates, with translation, nuance and an example ("Buscar" opens it in the
+    search).
+  - "¿Suena natural?" (Does it sound natural?): a verdict on a sentence ("Suena natural",
+    "Se entiende, pero no suena natural", "Tiene errores"), the most natural version, its
+    register, why, and up to three alternatives with their nuance. It follows the accent chosen
+    in "Ajustes" (British or American, Spain or Mexico).
+
+Every word, expression and example has an "Escuchar" (Listen) button. "Ajustes" (the gear in
+the header) holds the accent for each language (stored on the device, like the voices) and the
+AI keys (stored in the account).
 
 The section is in the URL (`#/expresiones`), so the phone's back button works. The app is an
-installable PWA that opens offline, and all this content works offline too (only the external
-links need a connection).
+installable PWA that opens offline, and the bundled content works offline too. The external
+links, the recordings, speech recognition and the AI need a connection.
 
 Feature ideas and possible data sources are in [docs/ideas.md](docs/ideas.md).
+
+## Voice and AI
+
+- **Voice**: the browser's own Web Speech API, free and without keys ([src/speech.ts](src/speech.ts)).
+  Text to speech picks the device voice that best matches the accent (same accent, then same
+  language, installed voices first). Speech recognition exists in Chrome (Android and desktop)
+  and Safari; Chrome sends the audio to its own service, so it needs a connection. Firefox has
+  no recognition: the app hides the microphone buttons.
+- **AI**: `firebase-app-kit/ai`, the same browser-side adapter as CommunityAssistant (Google
+  Gemini, OpenAI or Anthropic Claude, with the user's own key; Gemini has a free tier). Keys
+  and models are set up with the kit's `AiSettingsPanel` in "Ajustes" and stored in
+  `users/{uid}/settings/ai`, the same shape (and path) as CommunityAssistant: only the owner can
+  read it. Prompts, JSON schemas and the checks of each answer are in
+  [src/assistant.ts](src/assistant.ts): every task asks for one JSON object (Claude gets the
+  schema as structured output; Gemini and OpenAI get JSON mode and the shape in the prompt), and
+  the user's text is sent inside a tag and declared as data. Claude runs at effort `low` for the
+  tip of the tongue and the photo text, and at its default for "¿Suena natural?". Photos are
+  shrunk to 1568 px and sent as JPEG ([src/image.ts](src/image.ts)).
 
 ## Content
 
@@ -92,8 +134,10 @@ language does not need new rules.
 | Document | Content |
 |----------|---------|
 | `users/{uid}` | `{ sourceLanguage, targetLanguage }`: the user's last direction |
+| `users/{uid}/settings/ai` | `{ providers: { gemini?, openai?, anthropic?: { apiKey, model, models } }, lastProvider, anthropicFallback }`: the user's AI keys (firebase-app-kit/ai shape) |
 
-Everything else is denied by [firestore.rules](firestore.rules). New collections (a notebook
+Everything else is denied by [firestore.rules](firestore.rules). The accents are not in
+Firestore: they are stored on the device (`localStorage`, key `labia.accents`). New collections (a notebook
 of saved lookups, for example) need their own rules and tests.
 
 ## Access
@@ -126,7 +170,7 @@ installed from GitHub (`github:luiz1919/firebase-app-kit#vX.Y.Z`): while that re
 
 ```sh
 npm run lint
-npm test             # unit tests (content, search, languages, sources, screens), no Firebase
+npm test             # unit tests (content, search, speech, AI prompts, sharing...), no Firebase or network
 npm run test:rules   # Firestore rules in the local emulator (needs Java and the Firebase CLI)
 npm run build
 npm run preview

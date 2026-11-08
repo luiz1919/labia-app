@@ -125,3 +125,18 @@ export interface PhrasalVerb {
   register?: Register
   senses: PhrasalVerbSense[]
 }
+
+// Minimal pairs ------------------------------------------------------------------------------
+
+/** Two words that differ in a single sound. */
+export interface MinimalPair {
+  id: string
+  lang: LanguageCode
+  words: [string, string]
+  /** Broad IPA transcription of each word. */
+  ipa: [string, string]
+  /** What changes and how to make the sound, in Spanish. */
+  hint: string
+  /** Only told apart in these regions. */
+  regions?: Region[]
+}

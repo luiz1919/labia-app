@@ -2,7 +2,7 @@ import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { after, before, beforeEach, test } from 'node:test'
 import { assertFails, assertSucceeds, initializeTestEnvironment } from '@firebase/rules-unit-testing'
-import { deleteDoc, doc, getDoc, setDoc } from 'firebase/firestore'
+import { deleteDoc, deleteField, doc, getDoc, setDoc } from 'firebase/firestore'
 
 const projectId = 'demo-labia'
 const ownerUid = 'settings-test-owner'
@@ -61,8 +61,41 @@ test('malformed preferences are rejected', async () => {
   for (const data of invalid) await assertFails(setDoc(doc(database, settingsPath), data))
 })
 
-test('everything outside the user document is denied', async () => {
+const aiPath = `users/${ownerUid}/settings/ai`
+const aiSettings = { providers: { gemini: { apiKey: 'test-key', model: 'gemini-flash', models: ['gemini-flash'] } }, lastProvider: 'gemini', anthropicFallback: true }
+
+test('owner can save, update and remove their AI settings with the kit actions', async () => {
   const database = owner()
+  await assertSucceeds(setDoc(doc(database, aiPath), aiSettings))
+  await assertSucceeds(setDoc(doc(database, aiPath), { providers: { anthropic: { apiKey: 'other-key', model: 'claude-opus-5-5', models: [] } } }, { merge: true }))
+  await assertSucceeds(setDoc(doc(database, aiPath), { lastProvider: 'anthropic' }, { merge: true }))
+  await assertSucceeds(setDoc(doc(database, aiPath), { providers: { gemini: deleteField() } }, { merge: true }))
+  const saved = (await assertSucceeds(getDoc(doc(database, aiPath)))).data()
+  assert.deepEqual(Object.keys(saved.providers), ['anthropic'])
+  await assertSucceeds(deleteDoc(doc(database, aiPath)))
+})
+
+test('nobody else can read the AI keys, and malformed AI settings are rejected', async () => {
+  await setDoc(doc(owner(), aiPath), aiSettings)
+  for (const context of [environment.authenticatedContext('other-user'), environment.unauthenticatedContext()]) {
+    await assertFails(getDoc(doc(context.firestore(), aiPath)))
+    await assertFails(setDoc(doc(context.firestore(), aiPath), aiSettings))
+  }
+  const database = owner()
+  for (const invalid of [
+    { ...aiSettings, extra: 1 },
+    { providers: { mistral: { apiKey: 'x', model: 'y' } } },
+    { providers: { gemini: { apiKey: 42, model: 'y' } } },
+    { providers: { gemini: { apiKey: 'x', model: 'y', secret: true } } },
+    { providers: { gemini: { apiKey: 'x'.repeat(501), model: 'y' } } },
+    { lastProvider: 'mistral' },
+    { anthropicFallback: 'yes' },
+  ]) await assertFails(setDoc(doc(database, aiPath), invalid))
+})
+
+test('everything outside the user documents is denied', async () => {
+  const database = owner()
+  await assertFails(setDoc(doc(database, `users/${ownerUid}/settings/other`), { theme: 'dark' }))
   await assertFails(setDoc(doc(database, `users/${ownerUid}/notebook/entry`), { term: 'hola' }))
   await assertFails(getDoc(doc(database, 'languages/es')))
 })

@@ -1,27 +1,26 @@
-import { Blocks, MessageSquareQuote, Scale, Search, TriangleAlert } from 'lucide-react'
-import { SCREENS, screenHash } from '../screens'
-import type { ScreenId } from '../screens'
+import { AudioLines, BookOpen, Search, Sparkles } from 'lucide-react'
+import { screenHash, TABS } from '../screens'
+import type { TabId } from '../screens'
 
 const ICONS = {
   buscar: Search,
-  expresiones: MessageSquareQuote,
-  'falsos-amigos': TriangleAlert,
-  diferencias: Scale,
-  'phrasal-verbs': Blocks,
-} as const satisfies Record<ScreenId, unknown>
+  aprender: BookOpen,
+  pronunciar: AudioLines,
+  asistente: Sparkles,
+} as const satisfies Record<TabId, unknown>
 
 /** Tab bar at the bottom of the screen, within thumb reach. */
-export default function BottomNav({ current }: { current: ScreenId }) {
+export default function BottomNav({ current }: { current: TabId | null }) {
   return (
     <nav className="bottom-nav" aria-label="Secciones">
       <ul>
-        {SCREENS.map(screen => {
-          const Icon = ICONS[screen.id]
+        {TABS.map(tab => {
+          const Icon = ICONS[tab.id]
           return (
-            <li key={screen.id}>
-              <a href={screenHash(screen.id)} aria-current={screen.id === current ? 'page' : undefined}>
+            <li key={tab.id}>
+              <a href={screenHash(tab.id)} aria-current={tab.id === current ? 'page' : undefined}>
                 <Icon size={22} aria-hidden="true" />
-                <span>{screen.label}</span>
+                <span>{tab.label}</span>
               </a>
             </li>
           )

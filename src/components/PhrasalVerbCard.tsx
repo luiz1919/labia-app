@@ -4,6 +4,7 @@ import type { PhrasalObject, PhrasalVerb } from '../data/types'
 import type { LanguageCode } from '../languages'
 import { phrasalVerbText } from '../search'
 import { Badges, Example } from './bits'
+import SpeakButton from './SpeakButton'
 
 const OBJECT_HINTS: Readonly<Record<PhrasalObject, string>> = {
   separable: 'El complemento puede ir en medio: turn it off',
@@ -16,7 +17,7 @@ export default function PhrasalVerbCard({ phrasal, partner }: { phrasal: Phrasal
   return (
     <article className="card">
       <div className="card-heading">
-        <h3 lang={PHRASAL_VERB_LANG}>{phrasalVerbText(phrasal)}</h3>
+        <h3 className="speakable"><span lang={PHRASAL_VERB_LANG}>{phrasalVerbText(phrasal)}</span><SpeakButton text={phrasalVerbText(phrasal)} lang={PHRASAL_VERB_LANG} /></h3>
         <Badges register={phrasal.register} />
       </div>
       <ol className="senses">

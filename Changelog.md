@@ -10,7 +10,19 @@ Unreleased by hand when you want them clearer.
 
 ## Unreleased
 
-_Nothing yet._
+- New bottom bar with four tabs: "Buscar", "Aprender" (the four content sections, now with a
+  back link), "Pronunciar" and "Asistente"; "Ajustes" (Settings) is the gear in the header.
+- "Escuchar" (Listen) buttons on every word, expression and example, with the device voice and
+  the accent chosen in "Ajustes" (British or American English, Spain or Mexico Spanish).
+- "Pronunciar": minimal pairs to listen and choose (20 in English, 9 in Spanish) and to say
+  aloud, checked with speech recognition; free practice with any sentence, also slowly.
+- "Buscar": IPA and recordings by accent for single English words (Free Dictionary API);
+  "Pegar" (Paste) from the clipboard; "Foto" (Photo) reads the text in a picture with the AI;
+  text shared from other apps on Android ("Compartir" › Labia) goes straight to the search.
+- "Asistente", with your own AI key (Gemini, OpenAI or Claude): "Punta de la lengua" finds a
+  word from its description and "¿Suena natural?" reviews a sentence with alternatives.
+- AI keys are set up in "Ajustes" with firebase-app-kit's shared panel, in
+  `users/{uid}/settings/ai` (new Firestore rules).
 
 ## [v0.1.0] - 2026-11-08
 

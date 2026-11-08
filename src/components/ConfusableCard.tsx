@@ -3,6 +3,7 @@ import { Check, RotateCcw, X } from 'lucide-react'
 import type { Confusable } from '../data/types'
 import type { LanguageCode, LanguagePair } from '../languages'
 import { Example } from './bits'
+import SpeakButton from './SpeakButton'
 
 function Quiz({ entry }: { entry: Confusable }) {
   const [answers, setAnswers] = useState<Record<number, string>>({})
@@ -58,7 +59,7 @@ export default function ConfusableCard({ entry, pair }: { entry: Confusable; pai
         <dl className="usages">
           {entry.usages.map(usage => (
             <div key={usage.word}>
-              <dt lang={entry.lang}>{usage.word}</dt>
+              <dt className="speakable"><span lang={entry.lang}>{usage.word}</span><SpeakButton text={usage.word} lang={entry.lang} size={16} /></dt>
               <dd>{usage.use}</dd>
               {usage.examples.map(example => <dd key={example[entry.lang]}><Example example={example} first={entry.lang} second={translation} /></dd>)}
             </div>

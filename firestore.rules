@@ -1,6 +1,18 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+    function validProvider(provider) {
+      return provider is map && provider.keys().hasOnly(['apiKey', 'model', 'models'])
+        && (!('apiKey' in provider) || (provider.apiKey is string && provider.apiKey.size() <= 500))
+        && (!('model' in provider) || (provider.model is string && provider.model.size() <= 200))
+        && (!('models' in provider) || (provider.models is list && provider.models.size() <= 500));
+    }
+    function validProviders(providers) {
+      return providers is map && providers.keys().hasOnly(['anthropic', 'gemini', 'openai'])
+        && (!('anthropic' in providers) || validProvider(providers.anthropic))
+        && (!('gemini' in providers) || validProvider(providers.gemini))
+        && (!('openai' in providers) || validProvider(providers.openai));
+    }
     // users/{uid}: the user's preferences (the language pair). Language codes are checked by
     // shape only (ISO 639: two or three lowercase letters), so adding a language to the app
     // does not require new rules.
@@ -11,6 +23,17 @@ service cloud.firestore {
         && request.resource.data.sourceLanguage is string && request.resource.data.sourceLanguage.matches('^[a-z]{2,3}$')
         && request.resource.data.targetLanguage is string && request.resource.data.targetLanguage.matches('^[a-z]{2,3}$')
         && request.resource.data.sourceLanguage != request.resource.data.targetLanguage;
+    }
+    // users/{uid}/settings/ai: the user's own AI keys and models (firebase-app-kit/ai shape,
+    // same document as CommunityAssistant). Only the owner can read or change it.
+    match /users/{uid}/settings/ai {
+      allow read, delete: if request.auth != null && request.auth.uid == uid;
+      allow create, update: if request.auth != null && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(['providers', 'lastProvider', 'anthropicFallback'])
+        && (!('providers' in request.resource.data) || validProviders(request.resource.data.providers))
+        && (!('lastProvider' in request.resource.data) || request.resource.data.lastProvider == null
+          || request.resource.data.lastProvider in ['anthropic', 'gemini', 'openai'])
+        && (!('anthropicFallback' in request.resource.data) || request.resource.data.anthropicFallback is bool);
     }
     match /{document=**} {
       allow read, write: if false;

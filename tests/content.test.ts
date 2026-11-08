@@ -3,6 +3,7 @@ import test from 'node:test'
 import { CONFUSABLES } from '../src/data/confusables.ts'
 import { FALSE_FRIENDS } from '../src/data/falseFriends.ts'
 import { IDIOMS } from '../src/data/idioms.ts'
+import { MINIMAL_PAIRS } from '../src/data/minimalPairs.ts'
 import { PHRASAL_VERB_LANG, PHRASAL_VERBS } from '../src/data/phrasalVerbs.ts'
 import { REGION_LABELS, REGISTER_LABELS } from '../src/data/types.ts'
 import type { Translations } from '../src/data/types.ts'
@@ -86,4 +87,17 @@ test('phrasal verbs are unique and every sense has a Spanish meaning and a trans
       assertTranslations(sense.example, [PHRASAL_VERB_LANG, 'es'], `${phrasal.id} example`)
     }
   }
+})
+
+test('minimal pairs have two different words with their IPA, a hint and regions of their language', () => {
+  assertUniqueIds(MINIMAL_PAIRS)
+  for (const pair of MINIMAL_PAIRS) {
+    assert.ok(isLanguageCode(pair.lang), pair.id)
+    assert.notEqual(pair.words[0], pair.words[1], pair.id)
+    assert.equal(pair.id, pair.words.join('-'), pair.id)
+    for (const ipa of pair.ipa) assert.match(ipa, /^\/.+\/$/, `${pair.id}: IPA between slashes`)
+    assert.ok(pair.hint.trim(), pair.id)
+    for (const region of pair.regions ?? []) assert.ok(region.startsWith(`${pair.lang}-`), pair.id)
+  }
+  for (const lang of ['es', 'en']) assert.ok(MINIMAL_PAIRS.filter(pair => pair.lang === lang).length >= 5, `${lang}: too few pairs`)
 })

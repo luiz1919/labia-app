@@ -131,7 +131,7 @@ npm run test:rules
 ```
 
 Starts the Firestore emulator on `127.0.0.1:8087` with the fake project `demo-labia` and checks
-that each user can only read and write their own preferences, and that malformed data is
+that each user can only read and write their own preferences and AI settings, and that malformed data is
 rejected. `PERMISSION_DENIED` messages are expected in the tests of forbidden access: look at
 the final summary. It does not publish rules or use real accounts. Port 8087 is used so it does
 not clash with TripPlanner (8085) or CommunityAssistant (8086).
