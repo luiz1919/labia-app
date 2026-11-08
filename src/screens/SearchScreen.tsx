@@ -5,6 +5,7 @@ import type { AiSettings } from 'firebase-app-kit/ai'
 import { askJson, errorMessage } from '../askAssistant'
 import { parseLines, photoTextRequest } from '../assistant'
 import ConfusableCard from '../components/ConfusableCard'
+import EngineAnswerCard from '../components/EngineAnswerCard'
 import FalseFriendCard from '../components/FalseFriendCard'
 import IdiomCard from '../components/IdiomCard'
 import PhrasalVerbCard from '../components/PhrasalVerbCard'
@@ -14,7 +15,13 @@ import { languageName } from '../languages'
 import type { LanguagePair } from '../languages'
 import { fetchPronunciations, isSingleEnglishWord } from '../pronunciation'
 import type { Pronunciation } from '../pronunciation'
-import { phrasalVerbPartner, searchContent } from '../search'
+import { answersWhileTyping, engineName, engineUnavailable } from '../engines'
+import type { EngineContext } from '../engines'
+import type { EngineId } from '../engines/types'
+import { useEnginePreferences } from '../preferencesContext'
+import { MIN_QUERY_LENGTH, normalize, phrasalVerbPartner, searchContent } from '../search'
+import { accentVariety } from '../speech'
+import { useSpeech } from '../speechContext'
 import { sourceLinks } from '../sources'
 
 function Results({ title, children }: { title: string; children: ReactNode }) {
@@ -124,17 +131,68 @@ function TextSources({ settings, onText }: { settings: AiSettings; onText: (text
   )
 }
 
+/** The query the engines use: the text after a pause in typing (or right away on Enter). */
+function useSettledTerm(term: string, delay = 900): [string, () => void] {
+  const [settled, setSettled] = useState(term)
+  useEffect(() => {
+    const timer = window.setTimeout(() => setSettled(term), delay)
+    return () => window.clearTimeout(timer)
+  }, [term, delay])
+  return [settled, () => setSettled(term)]
+}
+
+/** First usable engine answers; the others can be asked from the chips below it. */
+function EngineAnswers({ term, submitted, context }: { term: string; submitted: string; context: EngineContext }) {
+  const { engineOrder } = useEnginePreferences()
+  const [opened, setOpened] = useState<{ term: string; ids: EngineId[] }>({ term: '', ids: [] })
+  const usable = engineOrder.filter(id => !engineUnavailable(id, context))
+  const primary = usable[0]
+  const others = usable.slice(1)
+  const extra = opened.term === term ? opened.ids : []
+  if (!primary) return <p className="card-note">No hay ningún motor de búsqueda disponible. Revisa el orden y la IA en <a href="#/ajustes">Ajustes</a>.</p>
+  const autoRun = (id: EngineId) => answersWhileTyping(id) || normalize(submitted) === normalize(term)
+
+  function toggle(id: EngineId) {
+    setOpened({ term, ids: extra.includes(id) ? extra.filter(other => other !== id) : [...extra, id] })
+  }
+
+  return (
+    <section className="result-group" aria-label="Traducción">
+      <h2 className="eyebrow">Traducción</h2>
+      <div className="card-list">
+        <EngineAnswerCard id={primary} term={term} context={context} autoRun={autoRun(primary)} primary />
+        {others.length > 0 && (
+          <div className="chip-filter" role="group" aria-label="Ver también la respuesta de otros motores">
+            <span className="chip-filter-label">Ver también en</span>
+            <div className="chip-row">
+              {others.map(id => <button key={id} type="button" className="chip" aria-pressed={extra.includes(id)} onClick={() => toggle(id)}>{engineName(id)}</button>)}
+            </div>
+          </div>
+        )}
+        {extra.map(id => <EngineAnswerCard key={id} id={id} term={term} context={context} autoRun />)}
+      </div>
+    </section>
+  )
+}
+
 export default function SearchScreen({ pair, term, onTermChange, settings }: { pair: LanguagePair; term: string; onTermChange: (term: string) => void; settings: AiSettings }) {
   const results = searchContent(term, pair)
   const links = sourceLinks(term, pair)
   const partner = phrasalVerbPartner(pair)
   const pronunciations = usePronunciations(term, pair.source === 'en')
-  const found = results.falseFriends.length + results.idioms.length + results.phrasalVerbs.length + results.confusables.length + pronunciations.length
   const sourceName = languageName(pair.source).toLowerCase()
+  const { accents } = useSpeech()
+  const [settled, settleNow] = useSettledTerm(term)
+  const [submitted, setSubmitted] = useState('')
+  const engineContext: EngineContext = { pair, aiSettings: settings, variety: accentVariety(pair.target, accents[pair.target]) }
+  const engineTerm = normalize(settled).length >= MIN_QUERY_LENGTH ? settled.trim() : ''
 
-  // Results update while typing; Enter only closes the phone keyboard so they are visible.
+  // Labia's own results update while typing; Enter asks the engines right away (the AI only
+  // answers on Enter) and closes the phone keyboard so the results are visible.
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
+    settleNow()
+    setSubmitted(term)
     if (document.activeElement instanceof HTMLElement) document.activeElement.blur()
   }
 
@@ -154,12 +212,13 @@ export default function SearchScreen({ pair, term, onTermChange, settings }: { p
       ) : (
         <>
           {results.falseFriends.length > 0 && <Results title="Ojo: falso amigo">{results.falseFriends.map(match => <FalseFriendCard key={match.entry.id} match={match} pair={pair} />)}</Results>}
+          {engineTerm && <EngineAnswers term={engineTerm} submitted={submitted} context={engineContext} />}
           {pronunciations.length > 0 && <Results title="Pronunciación"><PronunciationCard word={term.trim().toLowerCase()} list={pronunciations} /></Results>}
           {results.idioms.length > 0 && <Results title="Expresiones">{results.idioms.map(match => <IdiomCard key={match.idiom.id} idiom={match.idiom} expression={match.expression} pair={pair} />)}</Results>}
           {partner && results.phrasalVerbs.length > 0 && <Results title="Phrasal verbs">{results.phrasalVerbs.map(phrasal => <PhrasalVerbCard key={phrasal.id} phrasal={phrasal} partner={partner} />)}</Results>}
           {results.confusables.length > 0 && <Results title="Diferencias">{results.confusables.map(entry => <ConfusableCard key={entry.id} entry={entry} pair={pair} />)}</Results>}
-          <section className="result-group" aria-labelledby="sources-title">
-            <h2 id="sources-title" className="eyebrow">{found ? 'Consultar también en' : 'Todavía no está en Labia. Consulta en'}</h2>
+          <details className="more-sources">
+            <summary>Más diccionarios (se abren fuera de Labia)</summary>
             <ul className="source-links">
               {links.map(({ source, url }) => (
                 <li key={source.id}>
@@ -170,7 +229,7 @@ export default function SearchScreen({ pair, term, onTermChange, settings }: { p
                 </li>
               ))}
             </ul>
-          </section>
+          </details>
         </>
       )}
     </section>

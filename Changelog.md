@@ -10,7 +10,14 @@ Unreleased by hand when you want them clearer.
 
 ## Unreleased
 
-_Nothing yet._
+- "¿Cómo se dice?" answers inside the app: under "Traducción", the first search engine of your
+  order answers, and "Ver también en" shows the others. Engines: Wiktionary (free dictionary,
+  no key), the AI with your own key (full entry with meanings, examples, register and region;
+  only on Enter or a tap), MyMemory (sentences) and Chrome's on-device translator where
+  available.
+- "Ajustes" › "Motores de búsqueda": order the engines (saved on this device). Wiktionary
+  answers first by default.
+- WordReference, Reverso Context and Google Translate are now folded under "Más diccionarios".
 
 ## [v0.2.1] - 2026-11-08
 

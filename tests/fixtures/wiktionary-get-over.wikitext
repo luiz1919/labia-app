@@ -1,0 +1,79 @@
+==English==
+
+===Etymology===
+{{w|Analytic language|Analytic form}} of the earlier {{m|en|overget}}.
+
+===Pronunciation===
+* {{audio|en|en-au-get over.ogg|a=AU}}
+
+===Verb===
+{{en-verb|<,,got,got[UK]:gotten[US]>}}
+
+# {{lb|en|idiomatic|transitive}} To [[overcome]].
+#: {{ux|en|I'm trying to '''get over''' my fear of flying.}}
+# {{lb|en|idiomatic|transitive}} To [[recover]] (from).
+#: {{ux|en|I'm having problems '''getting over''' a bad cold.}}
+# {{lb|en|idiomatic|transitive}} To [[forget]] and [[move on]]; to [[calm down]] regarding something.
+#: {{ux|en|She was in love with me for 10 years, and still hasn't '''got over''' the fact that the feeling wasn't mutual.}}
+#* {{quote-song |en |year=1996 |author=w:Jerry Cantrell | artist=w:Alice in Chains |title=Killer Is Me |album={{w|Unplugged (Alice in Chains album)|Unplugged}} |url=https://music.youtube.com/watch?v=JztnWfB3sfY |passage=Oh yeah <br/>Can I start over? <br/>Oh yeah <br/>Can I start over? <br/>and '''get over''' it <br/>}}
+# {{lb|en|slang|transitive}} To manipulate (someone); to [[get around]] (someone); to [[improve]] one's own standing at another's expense.
+#: {{ux|en|We need a plan to '''get over''' Mr. Smith.}}
+# {{lb|en|idiomatic|transitive}} To successfully communicate; to [[get across]].
+#: {{ux|en|In our lectures we need to '''get over''' the importance of online safety.}}
+# {{lb|en|rugby}} To score a [[try]].
+#* {{quote-journal
+|en
+|date=February 13, 2011
+|author=Lyle Jackson
+|title=Ireland 22-25 France
+|work=BBC
+|url=http://news.bbc.co.uk/sport2/hi/rugby_union/9396342.stm
+|page=
+|passage=Ireland got their second try not long before half-time with O'Leary, an injury doubt all week with a stiff back, just about '''getting over''' for a try which was confirmed by the video referee.|archiveurl=https://web.archive.org/web/20251113040012/http://news.bbc.co.uk/sport2/hi/rugby_union/9396342.stm|archivedate=13 November 2025}}
+#* {{quote-journal|en|date=October 28 2023|author=Leighton Koopman|work={{w|Independent Online}}|title=YES!!! The Springboks beat the All Blacks to win another Rugby World Cup title|url=https://www.iol.co.za/sport/rugby/rugby-world-cup-2023/yes-the-springboks-beat-the-all-blacks-to-win-another-rugby-world-cup-title-a52cdff9-2db5-495f-b3fe-f02f6f4fd441|passage=But when a side plays for almost 20 of the first 40 minutes with only 14 men, you have to make that advantage count in your favour. Credit must go to the three-time champions for keeping the world champions from '''getting over''' for five points.|archiveurl=https://web.archive.org/web/20250210172602/https://www.iol.co.za/sport/rugby/rugby-world-cup-2023/yes-the-springboks-beat-the-all-blacks-to-win-another-rugby-world-cup-title-a52cdff9-2db5-495f-b3fe-f02f6f4fd441|archivedate=10 February 2025}}
+# {{lb|en|slang|intransitive}} To [[impress]] someone; to achieve a goal; to be successful.
+#: {{ux|en|The concert went well, and we really '''got over''' with the talent scout.}}
+# {{lb|en|professional wrestling|_|slang}} To establish a [[connection]] with the [[audience]] as a character or faction.
+# {{lb|en|slang|intransitive|transitive}} To use a drug one is addicted to; to provide an addict with a dose.
+#: {{ux|en|She needs to '''get over''' every day.}}
+#: {{ux|en|He can '''get''' me '''over'''.}}
+# {{lb|en|slang|intransitive|AAVE}} To have sex.
+
+====Translations====
+{{trans-top|to overcome}}
+* Finnish: {{t+|fi|voittaa}}, {{t+|fi|ylittää}}
+* French: {{t+|fr|surmonter}}
+* Georgian: {{t|ka|დაძლევა}}, {{t|ka|გადალახვა}}
+* German: {{t+|de|überwinden}}
+* Hungarian: {{t+|hu|legyőz}}, {{t+|hu|legyűr}}, {{t+|hu|felülkerekedik}}
+* Italian: {{t+|it|superare}}, {{t+|it|vincere}}
+* Korean: {{t+|ko|극복하다}}
+* Romanian: {{t|ro|trece peste}}
+* Russian: {{t+|ru|преодолева́ть|impf}}, {{t+|ru|преодоле́ть|pf}}
+* Spanish: {{t+|es|superar}}, {{t|es|[[sobreponerse]] [[a]]}}
+* Turkish: {{t+|tr|üstesinden gelmek}}, {{t+|tr|yenmek}}, {{t+|tr|aşmak}}
+{{trans-bottom}}
+
+{{trans-see|recover}}
+
+{{trans-top-see|to forget, and move on|over|move on|overcome}}
+* Finnish: {{t|fi|päästä yli}}
+* French: {{t+|fr|en revenir}}
+* Georgian: {{t|ka|შეგუება}}
+* German: {{t+|de|überwinden}}, {{t+|de|verschmerzen}}
+* Hungarian: {{t+|hu|túltesz|alt=túlteszi rajta magát}}
+* Italian: {{t+|it|superare}}
+* Norwegian: {{t+|no|komme over}}
+* Polish: {{t|pl|[[otrząsać]] [[się]]|impf}}, {{t|pl|[[otrząsnąć]] [[się]]|pf}}
+* Portuguese: {{t+|pt|superar}}
+* Russian: {{t+|ru|смиря́ться|impf}}, {{t+|ru|смири́ться|pf}}, {{t+|ru|свыка́ться|impf}}, {{t+|ru|свы́кнуться|pf}}
+* Spanish: {{t+|es|superar}}
+* Swedish: {{t+|sv|komma över}}
+* Turkish: {{t+|tr|teselli bulmak}}
+{{trans-bottom}}
+
+===See also===
+* {{l|en|get one over on}}
+
+===Anagrams===
+* {{anagrams|en|a=eegortv|overget}}

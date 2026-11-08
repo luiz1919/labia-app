@@ -1,6 +1,6 @@
-// External sites that answer a query. For now the app only links to them (opened in a new tab):
-// no API, no key and no scraping. Each source says which language pairs it supports, so adding
-// a language only needs its codes here.
+// External dictionaries under "Más diccionarios": plain links opened in a new tab (no API, no
+// key, no scraping). The answers inside the app come from src/engines/. Each source says which
+// language pairs it supports, so adding a language only needs its codes here.
 import type { LanguageCode, LanguagePair } from './languages'
 
 export interface LinkSource {

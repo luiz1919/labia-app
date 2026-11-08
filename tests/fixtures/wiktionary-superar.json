@@ -1,0 +1,46 @@
+{
+ "es": [
+  {
+   "partOfSpeech": "Verb",
+   "language": "Spanish",
+   "definitions": [
+    {
+     "definition": "to <a rel=\"mw:WikiLink\" href=\"/wiki/surpass\" title=\"surpass\">surpass</a>, <a rel=\"mw:WikiLink\" href=\"/wiki/exceed\" title=\"exceed\">exceed</a>"
+    },
+    {
+     "definition": "to <a rel=\"mw:WikiLink\" href=\"/wiki/overcome\" title=\"overcome\">overcome</a>"
+    },
+    {
+     "definition": "to <a rel=\"mw:WikiLink\" href=\"/wiki/beat\" title=\"beat\">beat</a>, to <a rel=\"mw:WikiLink\" href=\"/wiki/outdo\" title=\"outdo\">outdo</a>"
+    },
+    {
+     "definition": "to <a rel=\"mw:WikiLink\" href=\"/wiki/overtake\" title=\"overtake\">overtake</a>, <a rel=\"mw:WikiLink\" href=\"/wiki/pass\" title=\"pass\">pass</a>"
+    },
+    {
+     "definition": "to <a rel=\"mw:WikiLink\" href=\"/wiki/get_over\" title=\"get over\">get over</a>",
+     "parsedExamples": [
+      {
+       "example": "<b>Supéra</b>lo, hombre.",
+       "translation": "<b>Get over</b> it, man."
+      }
+     ],
+     "examples": [
+      "<b>Supéra</b>lo, hombre."
+     ]
+    },
+    {
+     "definition": "<span class=\"usage-label-sense\" about=\"#mwt28\" typeof=\"mw:Transclusion\"></span> to <a rel=\"mw:WikiLink\" href=\"/wiki/outdo\" title=\"outdo\">outdo</a> each other, to <a rel=\"mw:WikiLink\" href=\"/wiki/one-up\" title=\"one-up\">one-up</a> each other"
+    },
+    {
+     "definition": "<span class=\"usage-label-sense\" about=\"#mwt29\" typeof=\"mw:Transclusion\"></span> to <a rel=\"mw:WikiLink\" href=\"/wiki/outdo\" title=\"outdo\">outdo</a> oneself"
+    },
+    {
+     "definition": "<span class=\"usage-label-sense\" about=\"#mwt30\" typeof=\"mw:Transclusion\"></span> to be <a rel=\"mw:WikiLink\" href=\"/wiki/overcome\" title=\"overcome\">overcome</a>"
+    },
+    {
+     "definition": "<span class=\"usage-label-sense\" about=\"#mwt31\" typeof=\"mw:Transclusion\"></span> to be <a rel=\"mw:WikiLink\" href=\"/wiki/exceeded\" title=\"exceeded\">exceeded</a>, to be <a rel=\"mw:WikiLink\" href=\"/wiki/surmounted\" title=\"surmounted\">surmounted</a>, to be <a rel=\"mw:WikiLink\" href=\"/wiki/broken\" title=\"broken\">broken</a> <span class=\"mention-gloss-paren\" about=\"#mwt32\" typeof=\"mw:Transclusion\">(</span><span class=\"mention-gloss\" about=\"#mwt32\">e.g. a record broken</span><span class=\"mention-gloss-paren\" about=\"#mwt32\">)</span>"
+    }
+   ]
+  }
+ ]
+}

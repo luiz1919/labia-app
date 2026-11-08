@@ -6,11 +6,13 @@ export interface Language {
   code: string
   /** Name shown in the UI (Spanish). */
   name: string
+  /** English name, as used by the English Wiktionary ("* Spanish: ..." in translation tables). */
+  englishName: string
 }
 
 export const LANGUAGES = [
-  { code: 'es', name: 'Español' },
-  { code: 'en', name: 'Inglés' },
+  { code: 'es', name: 'Español', englishName: 'Spanish' },
+  { code: 'en', name: 'Inglés', englishName: 'English' },
 ] as const satisfies readonly Language[]
 
 export type LanguageCode = (typeof LANGUAGES)[number]['code']
@@ -29,6 +31,10 @@ export function isLanguageCode(value: unknown): value is LanguageCode {
 
 export function languageName(code: LanguageCode): string {
   return LANGUAGES.find(language => language.code === code)?.name ?? code
+}
+
+export function englishName(code: LanguageCode): string {
+  return LANGUAGES.find(language => language.code === code)?.englishName ?? code
 }
 
 export function swapPair({ source, target }: LanguagePair): LanguagePair {

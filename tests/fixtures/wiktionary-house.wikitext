@@ -1,0 +1,117 @@
+<!-- Trimmed from en.wiktionary.org/wiki/house (CC BY-SA): headings and translation lines only. -->
+==English==
+===Etymology 1===
+====Alternative forms====
+====Pronunciation====
+====Noun====
+=====Synonyms=====
+=====Hypernyms=====
+=====Hyponyms=====
+=====Derived terms=====
+=====Descendants=====
+=====Translations=====
+{{see translation subpage|Noun}}
+=====Further reading=====
+===Etymology 2===
+====Pronunciation====
+====Verb====
+=====Synonyms=====
+=====Derived terms=====
+=====Translations=====
+{{trans-top|keep within a structure or container}}
+* French: {{t+|fr|garer}}, {{t+|fr|loger}}
+* Spanish: {{t+|es|almacenar}}
+{{trans-bottom}}
+{{trans-top|admit to residence}}
+* French: {{t+|fr|héberger}}, {{t+|fr|abriter}}, {{t+|fr|loger}}
+* German: {{t+|de|unterbringen}}, {{t+|de|beherbergen}}
+* Spanish: {{t+|es|alojar}}, {{t+|es|hospedar}}, {{t+|es|albergar}}
+{{trans-bottom}}
+{{trans-top|take shelter}}
+{{trans-bottom}}
+{{trans-top|dwell within one of the twelve astrological houses}}
+{{trans-bottom}}
+{{trans-top|contain or enclose mechanical parts}}
+* Spanish: {{t+|es|encajar}}, {{t+|es|envolver}}
+{{trans-bottom}}
+===Etymology 3===
+====Pronunciation====
+====Noun====
+=====Descendants=====
+=====Translations=====
+{{trans-see|genre of music|house music}}
+==Chinese==
+===Etymology===
+===Pronunciation===
+===Noun===
+==Czech==
+===Pronunciation===
+===Etymology 1===
+====Noun====
+=====Declension=====
+===Etymology 2===
+===Pronunciation===
+====Noun====
+=====Declension=====
+===Further reading===
+==Dutch==
+===Etymology===
+===Pronunciation===
+===Noun===
+====Derived terms====
+==Finnish==
+===Etymology===
+===Pronunciation===
+===Noun===
+====Declension====
+===Further reading===
+==French==
+===Pronunciation===
+===Noun===
+===Anagrams===
+==Hungarian==
+===Etymology===
+===Pronunciation===
+===Noun===
+====Declension====
+====Derived terms====
+===References===
+==Middle English==
+===Etymology 1===
+====Noun====
+===Etymology 2===
+====Verb====
+==Norwegian Bokmål==
+===Etymology===
+===Noun===
+====Synonyms====
+===References===
+==Norwegian Nynorsk==
+===Etymology===
+===Noun===
+==Polish==
+===Etymology===
+===Pronunciation===
+===Noun===
+====Declension====
+====Derived terms====
+===Further reading===
+==Portuguese==
+===Etymology===
+===Pronunciation===
+===Noun===
+==Romanian==
+===Etymology===
+===Noun===
+====Declension====
+==Spanish==
+===Etymology===
+===Pronunciation===
+===Noun===
+====Usage notes====
+===Further reading===
+==Swedish==
+===Etymology===
+===Noun===
+====Declension====
+====Synonyms====

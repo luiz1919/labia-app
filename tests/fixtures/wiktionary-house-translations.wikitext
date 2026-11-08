@@ -1,0 +1,39 @@
+<!-- Trimmed from en.wiktionary.org/wiki/house/translations (CC BY-SA): headings and Spanish translation lines. -->
+{{translation subpage}}
+==English==
+===Noun===
+====Translations====
+{{trans-top-see|human abode|housing}}
+{{multitrans|data=
+* Spanish: {{tt+|es|casa|f}}, {{t+|es|casalicio|m}}
+{{trans-bottom}}
+{{trans-top-see|archetypal structure of a human abode|chalet}}
+* Spanish: {{tt+|es|casa|f}}
+{{trans-bottom}}
+{{trans-top|home for animal}}
+{{trans-bottom}}
+{{trans-top|theatre}}
+* Spanish: {{tt+|es|teatro|m}}
+{{trans-bottom}}
+{{trans-top|debating chamber for government politicians}}
+* Spanish: {{tt+|es|cámara|f}}
+{{trans-bottom}}
+{{trans-top|an establishment, business}}
+* Spanish: {{tt+|es|casa|f}}
+{{trans-bottom}}
+{{trans-top|the inner workings, as of a clock}}
+{{trans-bottom}}
+{{trans-top|dynasty, familiar descendance}}
+* Spanish: {{tt+|es|casa|f}}
+{{trans-bottom}}
+{{trans-top|astrology: one of the twelve divisions of an astrological chart}}
+* Spanish: {{tt+|es|casa|f}}
+{{trans-bottom}}
+{{trans-top|grouping of schoolchildren}}
+{{trans-bottom}}
+{{trans-top|curling: three concentric circles}}
+{{trans-bottom}}
+{{trans-see|bingo}}
+{{trans-top|children's game}}
+}}<!-- close {{multitrans}} -->
+{{trans-bottom}}

@@ -19,12 +19,14 @@ the same on every device; offline, the change is kept on the device and uploaded
 bottom bar has four tabs:
 
 - **"Buscar" (Search), "¿Cómo se dice?" (How do you say it?)**: type a word, a verb or an
-  expression. The app searches its own content (false friends first, as a warning, then idioms,
-  phrasal verbs and differences) and links the query to WordReference, Reverso Context and
-  "Google Traductor" (Google Translate), opened in a new tab (plain links: no API, no keys, no
-  scraping). A single English word also gets its pronunciation: IPA and recordings by accent
-  from the [Free Dictionary API](https://dictionaryapi.dev) (free, no key; recordings from
-  Wikimedia Commons). Text can come from elsewhere:
+  expression. Labia's own content shows while typing (false friends first, as a warning, then
+  idioms, phrasal verbs and differences). Under "Traducción" (Translation), the first search
+  engine of the user's order answers inside the app, and "Ver también en" (See also in) asks
+  the others (see [Search engines](#search-engines)). WordReference, Reverso Context and Google
+  Translate stay as plain links, folded under "Más diccionarios" (More dictionaries). A single
+  English word also gets its pronunciation: IPA and recordings by accent from the
+  [Free Dictionary API](https://dictionaryapi.dev) (free, no key; recordings from Wikimedia
+  Commons). Text can come from elsewhere:
   - "Pegar" (Paste): the clipboard.
   - "Foto" (Photo): the AI reads the text in a photo (a sign, a menu) and you pick the line to
     search. Needs an AI set up in "Ajustes".
@@ -66,6 +68,24 @@ installable PWA that opens offline, and the bundled content works offline too. T
 links, the recordings, speech recognition and the AI need a connection.
 
 Feature ideas and possible data sources are in [docs/ideas.md](docs/ideas.md).
+
+## Search engines
+
+The engines of "¿Cómo se dice?" live in [src/engines/](src/engines/). The user orders them in
+"Ajustes" › "Motores de búsqueda" (stored on the device, `localStorage` key `labia.engines`);
+the first one that can answer does so for every search, and the rest appear as "Ver también en"
+chips. All of them return the same shape (groups of translations with notes and examples), shown
+by one card.
+
+| Engine | What it gives | Cost and limits |
+|--------|---------------|-----------------|
+| Wiktionary (default first) | Translations by part of speech and meaning, set phrases, inflected forms, some examples. Into English: the REST definitions of the Spanish entry; from English: the translation tables of the English entry (its wikitext, including `/translations` subpages; unchecked tables skipped) | Free, no key, CORS. CC BY-SA: the card links to the page. Only when English is one of the two languages |
+| IA (AI) | A full entry: one translation per meaning with part of speech, register, region and an example, plus notes (false friends, typical mistakes) | The user's own key; Gemini has a free tier. Only on Enter or a tap, never while typing |
+| MyMemory | Sentence translation from translation memories; suggestions that agree win over its first one, which can be wrong | Free, no key, about 5,000 characters a day per device |
+| Traductor de Chrome | On-device translation (Chrome's Translator API): private and offline once the language pack is downloaded (the first time needs a tap) | Free. Only in Chrome versions that ship it (desktop for now); hidden elsewhere |
+
+Free engines answer after a short pause in typing (or right away with Enter); answers are cached
+for the session.
 
 ## Voice and AI
 
@@ -112,7 +132,7 @@ Everything language-specific is configuration, so adding a language does not tou
 
 - [src/languages.ts](src/languages.ts): `LANGUAGES`, the list of languages (ISO 639 code and
   Spanish name). The pair can never have the same language on both sides.
-- [src/sources.ts](src/sources.ts): `LINK_SOURCES`, the sites a query links to. Each source
+- [src/sources.ts](src/sources.ts): `LINK_SOURCES`, the sites under "Más diccionarios". Each source
   builds the link for a pair, or returns `null` if the site does not support that pair, and
   then it is not shown.
 

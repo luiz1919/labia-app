@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { naturalnessRequest, parseCandidates, parseLines, parseNaturalness, photoTextRequest, tipOfTongueRequest } from '../src/assistant.ts'
+import { dictionaryRequest, naturalnessRequest, parseCandidates, parseDictionaryEntry, parseLines, parseNaturalness, photoTextRequest, tipOfTongueRequest } from '../src/assistant.ts'
 
 type Schema = { type?: string; properties?: Record<string, Schema>; required?: string[]; additionalProperties?: boolean; items?: Schema }
 
@@ -53,4 +53,23 @@ test('a review needs a known verdict and a corrected sentence; the rest has safe
 test('photo lines are trimmed, deduplicated and capped', () => {
   assert.deepEqual(parseLines({ lines: [' Fish  and chips ', 'Fish and chips', '', 3, 'Mushy peas'] }), ['Fish and chips', 'Mushy peas'])
   assert.deepEqual(parseLines({}), [])
+})
+
+test('the AI dictionary entry asks for a strict schema and becomes engine groups', () => {
+  const request = dictionaryRequest('echar de menos', { source: 'es', target: 'en' }, 'británico')
+  assertStrict(request.schema as Schema)
+  assert.match(request.system, /español-inglés/)
+  assert.match(request.question, /<busqueda>\necho de menos|<busqueda>\nechar de menos/)
+  const answer = parseDictionaryEntry({
+    entries: [
+      { translation: 'to miss', partOfSpeech: 'verbo', meaning: 'notar la falta de alguien', register: 'neutral', region: '', example: 'I miss you.', exampleTranslation: 'Te echo de menos.' },
+      { translation: '', partOfSpeech: 'verbo' },
+    ],
+    notes: 'No confundir con «to lose».',
+  }, { source: 'es', target: 'en' })
+  assert.equal(answer.groups.length, 1)
+  assert.deepEqual(answer.groups[0].items, [{ text: 'to miss', lang: 'en' }])
+  assert.deepEqual(answer.groups[0].examples, [{ text: 'I miss you.', lang: 'en', translation: 'Te echo de menos.', translationLang: 'es' }])
+  assert.deepEqual(answer.notes, ['No confundir con «to lose».'])
+  assert.equal(parseDictionaryEntry({ entries: [{ translation: 'cuesta un huevo', register: 'vulgar', region: 'España' }] }, { source: 'en', target: 'es' }).groups[0].items[0].note, 'vulgar, España')
 })

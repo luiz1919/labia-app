@@ -6,6 +6,7 @@ import { useAuthUser } from 'firebase-app-kit/react'
 import { AboutButton, SyncStatus } from 'firebase-app-kit/ui'
 import { BUILD_INFO } from './buildInfo'
 import BottomNav from './components/BottomNav'
+import EnginePreferencesProvider from './components/EnginePreferencesProvider'
 import PairPicker from './components/PairPicker'
 import SpeechProvider from './components/SpeechProvider'
 import { auth } from './firebase'
@@ -87,7 +88,7 @@ function Home({ user, loggingOut, onLogout }: { user: User; loggingOut: boolean;
         {screen === 'phrasal-verbs' && <PhrasalVerbsScreen pair={pair} />}
         {screen === 'pronunciar' && <PronounceScreen pair={pair} />}
         {screen === 'asistente' && <AssistantScreen pair={pair} settings={ai.settings} ready={ai.ready} onSearch={searchFor} />}
-        {screen === 'ajustes' && <SettingsScreen settings={ai.settings} actions={ai.actions} error={ai.error} />}
+        {screen === 'ajustes' && <SettingsScreen pair={pair} settings={ai.settings} actions={ai.actions} error={ai.error} />}
       </main>
       <BottomNav current={tab} />
     </div>
@@ -116,8 +117,10 @@ export default function App() {
   if (!user) return <LoginScreen sessionError={sessionError} />
   return (
     <SpeechProvider>
-      {logoutError && <p className="error-message session-error" role="alert">{logoutError}</p>}
-      <Home key={user.uid} user={user} loggingOut={loggingOut} onLogout={() => { void logout() }} />
+      <EnginePreferencesProvider>
+        {logoutError && <p className="error-message session-error" role="alert">{logoutError}</p>}
+        <Home key={user.uid} user={user} loggingOut={loggingOut} onLogout={() => { void logout() }} />
+      </EnginePreferencesProvider>
     </SpeechProvider>
   )
 }
