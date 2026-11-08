@@ -61,6 +61,9 @@ function HandsFree({ lang, locale, onEntry, onActiveChange }: { lang: LanguageCo
   )
 }
 
+const TAP_MS = 600
+const HOLD_HINT = 'Mantén pulsado el botón mientras hablas y suéltalo al acabar.'
+
 /** Speaks while the button is held; on release, proposes what it understood. */
 function HoldToTalk({ lang, locale, disabled, onAdd }: { lang: LanguageCode; locale: string; disabled: boolean; onAdd: (text: string) => AddResult }) {
   const [phase, setPhase] = useState<'idle' | 'holding' | 'transcribing'>('idle')
@@ -68,8 +71,15 @@ function HoldToTalk({ lang, locale, disabled, onAdd }: { lang: LanguageCode; loc
   const [proposal, setProposal] = useState<{ text: string; options: string[] } | null>(null)
   const [message, setMessage] = useState('')
   const session = useRef<HeldListening | null>(null)
+  // A press shorter than this was a tap: the button has to be held while speaking.
+  const held = useRef({ pressedAt: 0, releasedAt: 0 })
 
   useEffect(() => () => session.current?.cancel(), [])
+
+  function tapped() {
+    const { pressedAt, releasedAt } = held.current
+    return releasedAt >= pressedAt && releasedAt - pressedAt < TAP_MS
+  }
 
   function begin() {
     if (session.current || disabled) return
@@ -77,17 +87,18 @@ function HoldToTalk({ lang, locale, disabled, onAdd }: { lang: LanguageCode; loc
     setLive('')
     setProposal(null)
     setPhase('holding')
-    const held = listenWhileHeld(locale, setLive)
-    session.current = held
-    held.result.then(guesses => {
-      if (session.current !== held) return
+    held.current = { pressedAt: Date.now(), releasedAt: 0 }
+    const listening = listenWhileHeld(locale, setLive)
+    session.current = listening
+    listening.result.then(guesses => {
+      if (session.current !== listening) return
       const options = [...new Set(guesses.map(guess => spokenEntry(guess, lang)).filter(Boolean))]
       if (options.length) setProposal({ text: options[0], options })
-      else setMessage('No he oído nada. Mantén pulsado el botón mientras hablas y suéltalo al acabar.')
+      else setMessage(tapped() ? HOLD_HINT : `No he oído nada. ${HOLD_HINT}`)
     }, failure => {
-      if (session.current === held) setMessage(failure instanceof Error ? failure.message : 'No se ha podido reconocer la voz.')
+      if (session.current === listening) setMessage(tapped() ? HOLD_HINT : failure instanceof Error ? failure.message : 'No se ha podido reconocer la voz.')
     }).finally(() => {
-      if (session.current !== held) return
+      if (session.current !== listening) return
       session.current = null
       setPhase('idle')
     })
@@ -95,6 +106,7 @@ function HoldToTalk({ lang, locale, disabled, onAdd }: { lang: LanguageCode; loc
 
   function release() {
     if (!session.current) return
+    held.current.releasedAt = Date.now()
     setPhase('transcribing')
     session.current.finish()
   }

@@ -10,7 +10,13 @@ Unreleased by hand when you want them clearer.
 
 ## Unreleased
 
-_Nothing yet._
+- "Mantén pulsado y habla": when the phone cuts the recognition on release ("aborted") before
+  the last words become final, the words shown on screen are proposed instead of the error
+  "No se ha podido reconocer la voz". A session cut before hearing anything is retried once
+  while the button is held. A quick tap says to hold the button. Unknown recognition errors
+  show their code.
+- "Pronunciar": stopping the microphone keeps what was said (it used to discard it and show an
+  error).
 
 ## [v0.4.0] - 2026-11-08
 

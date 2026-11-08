@@ -156,6 +156,14 @@ const RECOGNITION_ERRORS: Record<string, string> = {
   'audio-capture': 'No se encuentra el micrófono.',
   network: 'El reconocimiento de voz necesita conexión.',
   'language-not-supported': 'El reconocimiento de voz de este navegador no tiene este idioma.',
+  aborted: 'El reconocimiento de voz se ha cortado antes de oír nada. Inténtalo de nuevo.',
+  // Not a browser code: start() itself failed.
+  start: 'No se ha podido encender el micrófono. Inténtalo de nuevo.',
+}
+
+/** The message for a recognizer error; unknown ones keep their code, to know what happened. */
+export function recognitionError(code: string): string {
+  return RECOGNITION_ERRORS[code] ?? `No se ha podido reconocer la voz (error «${code}»).`
 }
 
 /** Listens once and returns what the recognizer understood (several guesses, best first). */
@@ -172,11 +180,13 @@ export function listen(locale: string): { result: Promise<string[]>; stop: () =>
       const first = event.results[0]
       heard = Array.from({ length: first?.length ?? 0 }, (_, index) => first[index].transcript)
     }
-    recognition.onerror = event => reject(new Error(RECOGNITION_ERRORS[event.error] ?? 'No se ha podido reconocer la voz.'))
-    recognition.onend = () => (heard.length ? resolve(heard) : reject(new Error(RECOGNITION_ERRORS['no-speech'])))
+    let error = 'no-speech'
+    recognition.onerror = event => { error = event.error }
+    recognition.onend = () => (heard.length ? resolve(heard) : reject(new Error(recognitionError(error))))
   })
   recognition.start()
-  return { result, stop: () => recognition.abort() }
+  // stop(), not abort(): what was said before the tap still counts.
+  return { result, stop: () => recognition.stop() }
 }
 
 // Errors after which continuous listening stops for good; the others are retried.
@@ -228,7 +238,7 @@ export function listenContinuously(locale: string, handlers: ContinuousHandlers,
     const quiet = error === '' || error === 'no-speech' || error === 'aborted'
     failures = heard || (quiet && now() - startedAt >= MIN_SESSION_MS) ? 0 : failures + 1
     if (failures >= MAX_FAILURES) {
-      fail(RECOGNITION_ERRORS[error] ?? 'El reconocimiento de voz se corta todo el rato. Inténtalo más tarde.')
+      fail(quiet ? 'El reconocimiento de voz se corta todo el rato. Inténtalo más tarde.' : recognitionError(error))
       return
     }
     later(start, failures ? 1000 * 2 ** failures : RESTART_MS)
@@ -260,7 +270,7 @@ export function listenContinuously(locale: string, handlers: ContinuousHandlers,
       running = null
       handlers.onListening?.(false)
       if (stopped) return
-      if (FATAL_ERRORS.has(error)) fail(RECOGNITION_ERRORS[error] ?? 'No se ha podido usar el micrófono.')
+      if (FATAL_ERRORS.has(error)) fail(recognitionError(error))
       else retry(error, heard, startedAt)
     }
     running = recognition
@@ -295,6 +305,8 @@ export function listenContinuously(locale: string, handlers: ContinuousHandlers,
 
 /** Pauses while the button is held start a new session; this many at most. */
 const MAX_HELD_SESSIONS = 10
+/** Sessions in a row cut off ("aborted") without hearing anything before giving up. */
+const MAX_EMPTY_ABORTS = 2
 /** After release, the browser gets this long to deliver the last words. */
 const FINISH_TIMEOUT_MS = 4000
 
@@ -310,7 +322,8 @@ export interface HeldListening {
 /**
  * Listens while a button is held ("push to talk"). `onLive` gets the text understood so far.
  * A pause while still holding ends the browser's session, so a new one starts and the words
- * add up.
+ * add up. Some phones cut the session on release ("aborted") before the last words become
+ * final: the live text shown on screen counts then.
  */
 export function listenWhileHeld(locale: string, onLive?: (text: string) => void, options: Pick<ContinuousOptions, 'Recognition' | 'later'> = {}): HeldListening {
   const Constructor = options.Recognition === undefined ? recognitionConstructor() : options.Recognition
@@ -319,29 +332,36 @@ export function listenWhileHeld(locale: string, onLive?: (text: string) => void,
   const Recognizer: RecognitionConstructor = Constructor
 
   const segments: string[][] = []
+  /** Words heard but not final yet. */
+  let pending = ''
   let current: Recognition | null = null
   let released = false
   let settled = false
   let sessions = 0
+  let emptyAborts = 0
   let settle: { resolve: (value: string[]) => void; reject: (error: Error) => void } = { resolve: () => {}, reject: () => {} }
   const result = new Promise<string[]>((resolve, reject) => { settle = { resolve, reject } })
 
-  // Guesses for the whole thing: the earlier segments as heard, then each guess of the last one.
+  // Guesses for the whole thing: the earlier segments as heard, then each guess of the last one
+  // (or the words that never became final).
   function guesses(): string[] {
+    const finals = segments.map(segment => segment[0])
+    if (pending) return [[...finals, pending].join(' ')]
     const last = segments.at(-1)
     if (!last) return []
-    const before = segments.slice(0, -1).map(segment => segment[0]).join(' ')
+    const before = finals.slice(0, -1).join(' ')
     return [...new Set(last.map(guess => `${before} ${guess}`.trim()))]
   }
 
-  function done(error?: Error) {
+  function done(error = '') {
     if (settled) return
     settled = true
     const recognition = current
     current = null
     recognition?.abort()
-    if (error && !segments.length) settle.reject(error)
-    else settle.resolve(guesses())
+    const found = guesses()
+    if (found.length || error === '' || error === 'no-speech') settle.resolve(found)
+    else settle.reject(new Error(recognitionError(error)))
   }
 
   function begin() {
@@ -352,32 +372,36 @@ export function listenWhileHeld(locale: string, onLive?: (text: string) => void,
     recognition.maxAlternatives = 5
     sessions++
     let error = ''
+    let heard = false
     recognition.onresult = event => {
       let interim = ''
       for (let index = event.resultIndex ?? 0; index < event.results.length; index++) {
         const item = event.results[index]
         const texts = Array.from({ length: item.length }, (_, option) => item[option].transcript.trim()).filter(Boolean)
-        if (item.isFinal === false) interim = texts[0] ?? interim
-        else if (texts.length) segments.push(texts)
+        if (!texts.length) continue
+        heard = true
+        if (item.isFinal === false) interim = texts[0]
+        else segments.push(texts)
       }
-      onLive?.([...segments.map(segment => segment[0]), interim].filter(Boolean).join(' '))
+      pending = interim
+      onLive?.([...segments.map(segment => segment[0]), pending].filter(Boolean).join(' '))
     }
     recognition.onerror = event => { error = event.error }
     recognition.onend = () => {
       if (current !== recognition) return
       current = null
       if (settled) return
-      const quiet = error === '' || error === 'no-speech'
-      if (!quiet) done(new Error(RECOGNITION_ERRORS[error] ?? 'No se ha podido reconocer la voz.'))
-      else if (released || sessions >= MAX_HELD_SESSIONS) done()
-      else begin()
+      emptyAborts = error === 'aborted' && !heard ? emptyAborts + 1 : heard ? 0 : emptyAborts
+      const quiet = error === '' || error === 'no-speech' || (error === 'aborted' && emptyAborts < MAX_EMPTY_ABORTS)
+      if (quiet && !released && sessions < MAX_HELD_SESSIONS) begin()
+      else done(error)
     }
     current = recognition
     try {
       recognition.start()
     } catch {
       current = null
-      done(new Error('No se ha podido usar el micrófono. Inténtalo de nuevo.'))
+      done('start')
     }
   }
 

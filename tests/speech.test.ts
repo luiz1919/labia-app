@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { accentVariety, DEFAULT_ACCENTS, heardAs, listenContinuously, listenWhileHeld, parseAccents, pickVoice } from '../src/speech.ts'
+import { accentVariety, DEFAULT_ACCENTS, heardAs, listenContinuously, listenWhileHeld, parseAccents, pickVoice, recognitionError } from '../src/speech.ts'
 import type { Recognition } from '../src/speech.ts'
 
 const voices = [
@@ -233,4 +233,34 @@ test('push to talk: nothing heard, errors, a browser that never ends, and leavin
   left.held.cancel()
   assert.equal(left.sessions[0].aborted, true)
   assert.deepEqual(await left.held.result, [])
+})
+
+test('push to talk keeps the live words when the phone cuts the session on release', async () => {
+  const cut = heldHarness()
+  cut.sessions[0].hear(false, 'zarzamo')
+  cut.held.finish()
+  cut.sessions[0].end('aborted')
+  assert.deepEqual(await cut.held.result, ['zarzamo'], 'the words on screen are what was understood')
+
+  const half = heldHarness()
+  half.sessions[0].hear(true, 'a la luz')
+  half.sessions[0].end()
+  half.sessions[1].hear(false, 'de la lu')
+  half.held.finish()
+  half.sessions[1].end('aborted')
+  assert.deepEqual(await half.held.result, ['a la luz de la lu'])
+})
+
+test('push to talk retries a session cut before hearing anything, then explains', async () => {
+  const { held, sessions } = heldHarness()
+  sessions[0].end('aborted')
+  assert.equal(sessions.length, 2, 'one cut is retried while the button is held')
+  sessions[1].end('aborted')
+  assert.equal(sessions.length, 2)
+  await assert.rejects(held.result, /se ha cortado antes de oír nada/)
+})
+
+test('unknown recognizer errors keep their code in the message', () => {
+  assert.equal(recognitionError('bad-grammar'), 'No se ha podido reconocer la voz (error «bad-grammar»).')
+  assert.match(recognitionError('not-allowed'), /permiso/)
 })
