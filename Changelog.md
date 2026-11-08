@@ -10,6 +10,10 @@ Unreleased by hand when you want them clearer.
 
 ## Unreleased
 
+_Nothing yet._
+
+## [v0.4.0] - 2026-11-08
+
 - New "Despensa" (Pantry) tab: save words to look up later. "Manos libres" (hands-free) keeps
   the microphone on, for example while reading a book aloud, and saves whatever follows
   "apunta" ("apunta zarzamora"; "note" in English) with a beep, keeping the screen on.
@@ -79,6 +83,7 @@ Unreleased by hand when you want them clearer.
 - Login, "Acerca de" (About) and the sync status come from firebase-app-kit's shared UI.
 - Installable PWA that opens offline.
 
+[v0.4.0]: https://github.com/luiz1919/labia-app/compare/v0.3.1...v0.4.0
 [v0.3.1]: https://github.com/luiz1919/labia-app/compare/v0.3.0...v0.3.1
 [v0.3.0]: https://github.com/luiz1919/labia-app/compare/v0.2.1...v0.3.0
 [v0.2.1]: https://github.com/luiz1919/labia-app/compare/v0.1.0...v0.2.1
