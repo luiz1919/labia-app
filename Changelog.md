@@ -12,6 +12,13 @@ Unreleased by hand when you want them clearer.
 
 _Nothing yet._
 
+## [v0.3.1] - 2026-11-08
+
+- Bump the acciones group with 4 updates
+- Deps: bump typescript from 6.0.3 to 7.0.2
+- Deps: bump @types/node from 24.19.2 to 26.6.6
+- Update dependabot settings and upgrade firebase-app-kit
+
 ## [v0.3.0] - 2026-11-08
 
 - "¿Cómo se dice?" answers inside the app: under "Traducción", the first search engine of your
@@ -65,6 +72,7 @@ _Nothing yet._
 - Login, "Acerca de" (About) and the sync status come from firebase-app-kit's shared UI.
 - Installable PWA that opens offline.
 
+[v0.3.1]: https://github.com/luiz1919/labia-app/compare/v0.3.0...v0.3.1
 [v0.3.0]: https://github.com/luiz1919/labia-app/compare/v0.2.1...v0.3.0
 [v0.2.1]: https://github.com/luiz1919/labia-app/compare/v0.1.0...v0.2.1
 [v0.2.0]: https://github.com/luiz1919/labia-app/compare/v0.1.0...v0.2.0
