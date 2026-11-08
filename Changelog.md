@@ -10,6 +10,10 @@ Unreleased by hand when you want them clearer.
 
 ## Unreleased
 
+_Nothing yet._
+
+## [v0.4.1] - 2026-11-09
+
 - "Mantén pulsado y habla": when the phone cuts the recognition on release ("aborted") before
   the last words become final, the words shown on screen are proposed instead of the error
   "No se ha podido reconocer la voz". A session cut before hearing anything is retried once
@@ -89,6 +93,7 @@ Unreleased by hand when you want them clearer.
 - Login, "Acerca de" (About) and the sync status come from firebase-app-kit's shared UI.
 - Installable PWA that opens offline.
 
+[v0.4.1]: https://github.com/luiz1919/labia-app/compare/v0.4.0...v0.4.1
 [v0.4.0]: https://github.com/luiz1919/labia-app/compare/v0.3.1...v0.4.0
 [v0.3.1]: https://github.com/luiz1919/labia-app/compare/v0.3.0...v0.3.1
 [v0.3.0]: https://github.com/luiz1919/labia-app/compare/v0.2.1...v0.3.0
