@@ -81,7 +81,7 @@ function Home({ user, loggingOut, onLogout }: { user: User; loggingOut: boolean;
         {settings.error && <p className="error-message" role="alert">{settings.error}</p>}
         {tab === 'aprender' && screen !== 'aprender' && <a className="back-link" href="#/aprender"><ArrowLeft size={18} aria-hidden="true" />Aprender</a>}
         {screen !== 'ajustes' && <PairPicker pair={pair} onChange={settings.changePair} />}
-        {screen === 'buscar' && <SearchScreen pair={pair} term={term} onTermChange={setTerm} settings={ai.settings} />}
+        {screen === 'buscar' && <SearchScreen uid={user.uid} pair={pair} term={term} onTermChange={setTerm} onPairChange={settings.changePair} settings={ai.settings} />}
         {screen === 'aprender' && <LearnScreen pair={pair} />}
         {screen === 'expresiones' && <IdiomsScreen pair={pair} />}
         {screen === 'falsos-amigos' && <FalseFriendsScreen pair={pair} />}

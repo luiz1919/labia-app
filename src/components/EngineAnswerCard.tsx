@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { Download, ExternalLink, LoaderCircle, RotateCcw, Sparkles } from 'lucide-react'
+import { Download, ExternalLink, LoaderCircle, RotateCcw, Sparkles, Star } from 'lucide-react'
 import { askEngine, engineName, engineUnavailable } from '../engines'
 import type { EngineContext } from '../engines'
 import { chromeAvailability } from '../engines/chromeTranslator'
@@ -37,11 +37,18 @@ function Group({ group }: { group: AnswerGroup }) {
   )
 }
 
+/** The star of an answer: whether the query is a favorite, and what tapping it does. */
+export interface FavoriteStar {
+  active: boolean
+  onToggle: (answer: EngineAnswer) => void
+}
+
 /**
  * The answer of one search engine for the current query. `autoRun`: ask as soon as the query
  * settles; otherwise a button asks (the AI, or the Chrome translator before its download).
+ * `favorite`: a star to save the query with this answer (shown once there is one to save).
  */
-export default function EngineAnswerCard({ id, term, context, autoRun, primary = false }: { id: EngineId; term: string; context: EngineContext; autoRun: boolean; primary?: boolean }) {
+export default function EngineAnswerCard({ id, term, context, autoRun, primary = false, favorite }: { id: EngineId; term: string; context: EngineContext; autoRun: boolean; primary?: boolean; favorite?: FavoriteStar }) {
   const key = `${id}|${context.pair.source}|${context.pair.target}|${term}`
   // Results are tagged with the query they belong to: a new query starts idle without resetting state.
   const [result, setResult] = useState<{ key: string; state: State }>({ key: '', state: { status: 'idle' } })
@@ -89,12 +96,28 @@ export default function EngineAnswerCard({ id, term, context, autoRun, primary =
   }, [id, key, term, autoRun, reason, fetchAnswer])
 
   const answer = state.status === 'done' ? state.answer : null
+  const starAnswer = answer && answer.groups.length > 0 ? answer : null
+  const showStar = Boolean(favorite && (favorite.active || starAnswer))
 
   return (
     <article className={`card engine-card${primary ? ' engine-primary' : ''}`} aria-label={`Respuesta de ${name}`} aria-busy={state.status === 'loading'}>
       <div className="engine-heading">
         <span className="engine-name">{name}</span>
-        {answer?.source?.href && <a className="engine-source" href={answer.source.href} target="_blank" rel="noopener noreferrer">{answer.source.label}<ExternalLink size={12} aria-hidden="true" /></a>}
+        <span className="engine-tools">
+          {answer?.source?.href && <a className="engine-source" href={answer.source.href} target="_blank" rel="noopener noreferrer">{answer.source.label}<ExternalLink size={12} aria-hidden="true" /></a>}
+          {favorite && showStar && (
+            <button
+              className={`star-button${favorite.active ? ' star-on' : ''}`}
+              type="button"
+              aria-pressed={favorite.active}
+              aria-label={favorite.active ? `Quitar «${term}» de favoritos` : `Guardar «${term}» en favoritos`}
+              title={favorite.active ? 'Quitar de favoritos' : 'Guardar en favoritos'}
+              onClick={() => { if (favorite.active || starAnswer) favorite.onToggle(starAnswer ?? { groups: [] }) }}
+            >
+              <Star size={22} fill={favorite.active ? 'currentColor' : 'none'} aria-hidden="true" />
+            </button>
+          )}
+        </span>
       </div>
       {reason ? (
         <p className="card-note">{reason}{id === 'ai' && <> <a href="#/ajustes">Ir a Ajustes</a></>}</p>

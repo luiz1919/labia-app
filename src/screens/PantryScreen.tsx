@@ -15,10 +15,12 @@ import { accentVariety, canRecognize, listenWhileHeld } from '../speech'
 import type { HeldListening } from '../speech'
 import { useSpeech } from '../speechContext'
 import useHandsFree from '../useHandsFree'
+import useFavorites from '../useFavorites'
 import usePantry from '../usePantry'
 import type { AddResult } from '../usePantry'
 
 type Pantry = ReturnType<typeof usePantry>
+type Favorites = ReturnType<typeof useFavorites>
 
 function addedMessage(text: string, result: AddResult): string {
   return result === 'duplicate' ? `«${text}» ya estaba en la despensa.` : `Apuntado: «${text}».`
@@ -222,7 +224,7 @@ function AddWord({ lang, locale, handsFreeOn, onAdd }: { lang: LanguageCode; loc
   )
 }
 
-function PantryRow({ item, pair, settings, pantry, onSearch }: { item: PantryItem; pair: LanguagePair; settings: AiSettings; pantry: Pantry; onSearch: (text: string, lang: LanguageCode) => void }) {
+function PantryRow({ item, pair, settings, pantry, favorites, onSearch }: { item: PantryItem; pair: LanguagePair; settings: AiSettings; pantry: Pantry; favorites: Favorites; onSearch: (text: string, lang: LanguageCode) => void }) {
   const { engineOrder } = useEnginePreferences()
   const { accents } = useSpeech()
   const [open, setOpen] = useState(false)
@@ -260,7 +262,7 @@ function PantryRow({ item, pair, settings, pantry, onSearch }: { item: PantryIte
             </form>
           )}
           {engine
-            ? <EngineAnswerCard key={`${engine}-${item.text}`} id={engine} term={item.text} context={context} autoRun primary />
+            ? <EngineAnswerCard key={`${engine}-${item.text}`} id={engine} term={item.text} context={context} autoRun primary favorite={{ active: favorites.isFavorite(item.text, itemPair), onToggle: answer => favorites.toggle(item.text, itemPair, engine, answer) }} />
             : <p className="card-note">No hay ningún motor de búsqueda disponible. Revisa el orden y la IA en <a href="#/ajustes">Ajustes</a>.</p>}
           <div className="practice-actions">
             <button className="secondary-button" type="button" onClick={() => onSearch(item.text, item.lang)}><Search size={16} aria-hidden="true" />Abrir en Buscar</button>
@@ -275,6 +277,7 @@ function PantryRow({ item, pair, settings, pantry, onSearch }: { item: PantryIte
 
 export default function PantryScreen({ uid, pair, settings, onSearch }: { uid: string; pair: LanguagePair; settings: AiSettings; onSearch: (text: string, lang: LanguageCode) => void }) {
   const pantry = usePantry(uid)
+  const favorites = useFavorites(uid)
   const { accents } = useSpeech()
   const [handsFreeOn, setHandsFreeOn] = useState(false)
   const lang = pair.source
@@ -282,7 +285,7 @@ export default function PantryScreen({ uid, pair, settings, onSearch }: { uid: s
   const pending = pantry.items.filter(item => !item.reviewed)
   const reviewed = pantry.items.filter(item => item.reviewed)
   const add = (text: string) => pantry.add(text, lang)
-  const row = (item: PantryItem) => <PantryRow key={item.id} item={item} pair={pair} settings={settings} pantry={pantry} onSearch={onSearch} />
+  const row = (item: PantryItem) => <PantryRow key={item.id} item={item} pair={pair} settings={settings} pantry={pantry} favorites={favorites} onSearch={onSearch} />
 
   return (
     <section className="screen" aria-labelledby="pantry-title">

@@ -10,7 +10,10 @@ Unreleased by hand when you want them clearer.
 
 ## Unreleased
 
-_Nothing yet._
+- Favorites: a star on every answer of "¿Cómo se dice?" (and of the Despensa) saves the search
+  with its translations. "Favoritos", at the bottom of "Buscar", lists them with a filter,
+  newest first or A–Z; tap one to search it again, or its star to remove it (with undo). Saved
+  in Firestore, per user.
 
 ## [v0.4.1] - 2026-11-09
 

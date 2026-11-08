@@ -53,6 +53,24 @@ service cloud.firestore {
         && validPantryItem(request.resource.data) && request.resource.data.createdAt == resource.data.createdAt
         && request.resource.data.lang == resource.data.lang;
     }
+    // users/{uid}/favorites/{favoriteId}: starred searches. The id comes from the direction and
+    // the query, so starring again overwrites; createdAt is the server time of the last star.
+    function validFavorite(data) {
+      return data.keys().hasOnly(['term', 'source', 'target', 'translations', 'engine', 'createdAt'])
+        && data.keys().hasAll(['term', 'source', 'target', 'translations', 'engine', 'createdAt'])
+        && data.term is string && data.term.size() > 0 && data.term.size() <= 200
+        && data.source is string && data.source.matches('^[a-z]{2,3}$')
+        && data.target is string && data.target.matches('^[a-z]{2,3}$')
+        && data.source != data.target
+        && data.translations is list && data.translations.size() <= 8
+        && data.engine is string && data.engine.size() <= 40
+        && data.createdAt == request.time;
+    }
+    match /users/{uid}/favorites/{favoriteId} {
+      allow read, delete: if request.auth != null && request.auth.uid == uid;
+      allow create, update: if request.auth != null && request.auth.uid == uid
+        && favoriteId.size() <= 1000 && validFavorite(request.resource.data);
+    }
     match /{document=**} {
       allow read, write: if false;
     }

@@ -258,6 +258,23 @@ input::placeholder { color: #8c8186; }
 .engine-heading { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .engine-name { color: var(--accent); font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; }
 .engine-source { display: inline-flex; align-items: center; gap: 4px; color: var(--muted); font-size: 12px; }
+.engine-tools { display: inline-flex; align-items: center; gap: 4px; margin: -8px -8px -8px 0; }
+.star-button { display: inline-grid; place-items: center; width: 44px; height: 44px; flex: 0 0 44px; padding: 0; border: 0; border-radius: 999px; background: transparent; color: var(--muted); }
+.star-button:hover { background: var(--accent-soft); color: var(--accent); }
+.star-button.star-on { color: #d99a00; }
+.star-button.star-on:hover { background: var(--warning-soft); color: #b37f00; }
+.favorites { display: flex; flex-direction: column; gap: 12px; margin-top: 12px; padding-top: 22px; border-top: 1px solid var(--border); }
+.empty-state + .favorites { margin-top: 0; padding-top: 0; border-top: 0; }
+.favorites-title { display: flex; align-items: center; gap: 8px; font-size: 20px; }
+.favorites-title svg { color: #d99a00; }
+.favorites-tools { display: flex; flex-direction: column; gap: 10px; }
+.favorite-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.favorite-item { display: flex; align-items: center; gap: 2px; padding: 4px 4px 4px 0; border: 1px solid var(--border); border-radius: 12px; background: #fff; }
+.favorite-open { display: flex; flex-direction: column; align-items: flex-start; gap: 3px; flex: 1; min-width: 0; padding: 8px 12px; border: 0; background: none; color: inherit; text-align: left; }
+.favorite-term { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; font-size: 17px; overflow-wrap: anywhere; }
+.favorite-translations { color: var(--muted); font-size: 14px; line-height: 1.4; overflow-wrap: anywhere; }
+.undo-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 12px; border-radius: 10px; background: #2a2326; color: #fff; font-size: 14px; }
+.undo-bar .text-button { color: #ffd166; padding: 4px 0; }
 .engine-loading { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 14px; }
 .engine-error { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
 .engine-error .error-message { margin: 0; }

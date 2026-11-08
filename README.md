@@ -32,6 +32,14 @@ bottom bar has five tabs:
     search. Needs an AI set up in "Ajustes".
   - "Compartir" (Share) › Labia from any app, with the PWA installed on Android (Web Share
     Target). iOS has no share target: use "Pegar" there.
+
+  Every engine answer has a star: it saves the query, its direction and the first translations
+  of that answer (up to 8) as a favorite; tapping it again removes it. "Favoritos"
+  (Favorites), at the bottom of the screen, lists them with a filter (by the query or its
+  translations, ignoring accents), "Recientes" (newest first) or "A–Z", the direction when it
+  is not the current one, a listen button, and the star to remove one ("Deshacer", undo, for a
+  few seconds). Tapping a favorite searches it again in its direction, as if sent with Enter.
+  The answers in the "Despensa" have the same star.
 - **"Aprender" (Learn)**: the bundled content, one tile per section (each one has a back link):
   - "Expresiones" (Idioms): the real equivalent in the other language, not the literal
     translation, with the meaning, the word-for-word translation ("Literalmente"), the register
@@ -177,6 +185,7 @@ language does not need new rules.
 |----------|---------|
 | `users/{uid}` | `{ sourceLanguage, targetLanguage }`: the user's last direction |
 | `users/{uid}/settings/ai` | `{ providers: { gemini?, openai?, anthropic?: { apiKey, model, models } }, lastProvider, anthropicFallback }`: the user's AI keys (firebase-app-kit/ai shape) |
+| `users/{uid}/favorites/{source}-{target}-{query}` | `{ term, source, target, translations, engine, createdAt }`: a starred search (the id is the direction plus the normalized, URL-encoded query, so the same search is one favorite on every device; up to 8 translations; `createdAt` is the server time of the last star) |
 | `users/{uid}/pantry/{id}` | `{ text, lang, createdAt, reviewed }`: a word of the "Despensa" (up to 100 characters; `createdAt` set by the server, never changed) |
 
 Everything else is denied by [firestore.rules](firestore.rules). The accents are not in

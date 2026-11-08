@@ -6,6 +6,7 @@ import { askJson, errorMessage } from '../askAssistant'
 import { parseLines, photoTextRequest } from '../assistant'
 import ConfusableCard from '../components/ConfusableCard'
 import EngineAnswerCard from '../components/EngineAnswerCard'
+import FavoritesSection from '../components/FavoritesSection'
 import FalseFriendCard from '../components/FalseFriendCard'
 import IdiomCard from '../components/IdiomCard'
 import PhrasalVerbCard from '../components/PhrasalVerbCard'
@@ -17,12 +18,14 @@ import { fetchPronunciations, isSingleEnglishWord } from '../pronunciation'
 import type { Pronunciation } from '../pronunciation'
 import { answersWhileTyping, engineName, engineUnavailable } from '../engines'
 import type { EngineContext } from '../engines'
-import type { EngineId } from '../engines/types'
+import type { EngineAnswer, EngineId } from '../engines/types'
 import { useEnginePreferences } from '../preferencesContext'
 import { MIN_QUERY_LENGTH, normalize, phrasalVerbPartner, searchContent } from '../search'
 import { accentVariety } from '../speech'
 import { useSpeech } from '../speechContext'
 import { sourceLinks } from '../sources'
+import type { Favorite } from '../favorites'
+import useFavorites from '../useFavorites'
 
 function Results({ title, children }: { title: string; children: ReactNode }) {
   return (
@@ -132,17 +135,17 @@ function TextSources({ settings, onText }: { settings: AiSettings; onText: (text
 }
 
 /** The query the engines use: the text after a pause in typing (or right away on Enter). */
-function useSettledTerm(term: string, delay = 900): [string, () => void] {
+function useSettledTerm(term: string, delay = 900): [string, (value?: string) => void] {
   const [settled, setSettled] = useState(term)
   useEffect(() => {
     const timer = window.setTimeout(() => setSettled(term), delay)
     return () => window.clearTimeout(timer)
   }, [term, delay])
-  return [settled, () => setSettled(term)]
+  return [settled, (value = term) => setSettled(value)]
 }
 
 /** First usable engine answers; the others can be asked from the chips below it. */
-function EngineAnswers({ term, submitted, context }: { term: string; submitted: string; context: EngineContext }) {
+function EngineAnswers({ term, submitted, context, favorites }: { term: string; submitted: string; context: EngineContext; favorites: ReturnType<typeof useFavorites> }) {
   const { engineOrder } = useEnginePreferences()
   const [opened, setOpened] = useState<{ term: string; ids: EngineId[] }>({ term: '', ids: [] })
   const usable = engineOrder.filter(id => !engineUnavailable(id, context))
@@ -156,11 +159,14 @@ function EngineAnswers({ term, submitted, context }: { term: string; submitted: 
     setOpened({ term, ids: extra.includes(id) ? extra.filter(other => other !== id) : [...extra, id] })
   }
 
+  // Every card's star saves the query; the translations come from the card that was starred.
+  const star = (id: EngineId) => ({ active: favorites.isFavorite(term, context.pair), onToggle: (answer: EngineAnswer) => favorites.toggle(term, context.pair, id, answer) })
+
   return (
     <section className="result-group" aria-label="Traducción">
       <h2 className="eyebrow">Traducción</h2>
       <div className="card-list">
-        <EngineAnswerCard id={primary} term={term} context={context} autoRun={autoRun(primary)} primary />
+        <EngineAnswerCard id={primary} term={term} context={context} autoRun={autoRun(primary)} primary favorite={star(primary)} />
         {others.length > 0 && (
           <div className="chip-filter" role="group" aria-label="Ver también la respuesta de otros motores">
             <span className="chip-filter-label">Ver también en</span>
@@ -169,13 +175,14 @@ function EngineAnswers({ term, submitted, context }: { term: string; submitted: 
             </div>
           </div>
         )}
-        {extra.map(id => <EngineAnswerCard key={id} id={id} term={term} context={context} autoRun />)}
+        {extra.map(id => <EngineAnswerCard key={id} id={id} term={term} context={context} autoRun favorite={star(id)} />)}
       </div>
     </section>
   )
 }
 
-export default function SearchScreen({ pair, term, onTermChange, settings }: { pair: LanguagePair; term: string; onTermChange: (term: string) => void; settings: AiSettings }) {
+export default function SearchScreen({ uid, pair, term, onTermChange, onPairChange, settings }: { uid: string; pair: LanguagePair; term: string; onTermChange: (term: string) => void; onPairChange: (pair: LanguagePair) => void; settings: AiSettings }) {
+  const favorites = useFavorites(uid)
   const results = searchContent(term, pair)
   const links = sourceLinks(term, pair)
   const partner = phrasalVerbPartner(pair)
@@ -196,6 +203,15 @@ export default function SearchScreen({ pair, term, onTermChange, settings }: { p
     if (document.activeElement instanceof HTMLElement) document.activeElement.blur()
   }
 
+  // A favorite searches again, in its own direction, as if typed and sent with Enter.
+  function openFavorite(favorite: Favorite) {
+    if (favorite.pair.source !== pair.source || favorite.pair.target !== pair.target) onPairChange(favorite.pair)
+    onTermChange(favorite.term)
+    settleNow(favorite.term)
+    setSubmitted(favorite.term)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
   return (
     <section className="screen" aria-labelledby="search-title">
       <h1 id="search-title">¿Cómo se dice?</h1>
@@ -212,7 +228,7 @@ export default function SearchScreen({ pair, term, onTermChange, settings }: { p
       ) : (
         <>
           {results.falseFriends.length > 0 && <Results title="Ojo: falso amigo">{results.falseFriends.map(match => <FalseFriendCard key={match.entry.id} match={match} pair={pair} />)}</Results>}
-          {engineTerm && <EngineAnswers term={engineTerm} submitted={submitted} context={engineContext} />}
+          {engineTerm && <EngineAnswers term={engineTerm} submitted={submitted} context={engineContext} favorites={favorites} />}
           {pronunciations.length > 0 && <Results title="Pronunciación"><PronunciationCard word={term.trim().toLowerCase()} list={pronunciations} /></Results>}
           {results.idioms.length > 0 && <Results title="Expresiones">{results.idioms.map(match => <IdiomCard key={match.idiom.id} idiom={match.idiom} expression={match.expression} pair={pair} />)}</Results>}
           {partner && results.phrasalVerbs.length > 0 && <Results title="Phrasal verbs">{results.phrasalVerbs.map(phrasal => <PhrasalVerbCard key={phrasal.id} phrasal={phrasal} partner={partner} />)}</Results>}
@@ -232,6 +248,7 @@ export default function SearchScreen({ pair, term, onTermChange, settings }: { p
           </details>
         </>
       )}
+      <FavoritesSection favorites={favorites} pair={pair} onOpen={openFavorite} />
     </section>
   )
 }

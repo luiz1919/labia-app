@@ -132,6 +132,41 @@ test('nobody else can see or change the pantry, and malformed words are rejected
   await assertFails(updateDoc(doc(database, pantryPath), { text: 42 }))
 })
 
+const favoritePath = `users/${ownerUid}/favorites/es-en-zarzamora`
+const favorite = () => ({ term: 'zarzamora', source: 'es', target: 'en', translations: ['blackberry', 'bramble'], engine: 'wiktionary', createdAt: serverTimestamp() })
+
+test('owner can star, star again, read and remove a search', async () => {
+  const database = owner()
+  await assertSucceeds(setDoc(doc(database, favoritePath), favorite()))
+  await assertSucceeds(setDoc(doc(database, favoritePath), { ...favorite(), translations: [] }))
+  const saved = (await assertSucceeds(getDoc(doc(database, favoritePath)))).data()
+  assert.deepEqual(saved.translations, [])
+  await assertSucceeds(deleteDoc(doc(database, favoritePath)))
+})
+
+test('nobody else can see or change the favorites, and malformed ones are rejected', async () => {
+  await setDoc(doc(owner(), favoritePath), favorite())
+  for (const context of [environment.authenticatedContext('other-user'), environment.unauthenticatedContext()]) {
+    const database = context.firestore()
+    await assertFails(getDoc(doc(database, favoritePath)))
+    await assertFails(setDoc(doc(database, favoritePath), favorite()))
+    await assertFails(deleteDoc(doc(database, favoritePath)))
+  }
+  const database = owner()
+  for (const invalid of [
+    { ...favorite(), term: '' },
+    { ...favorite(), term: 'x'.repeat(201) },
+    { ...favorite(), target: 'es' },
+    { ...favorite(), source: 'Spanish' },
+    { ...favorite(), translations: 'blackberry' },
+    { ...favorite(), translations: Array.from({ length: 9 }, (_, index) => `t${index}`) },
+    { ...favorite(), engine: 7 },
+    { ...favorite(), extra: true },
+    { ...favorite(), createdAt: Timestamp.fromMillis(0) },
+    { term: 'zarzamora', source: 'es', target: 'en', createdAt: serverTimestamp() },
+  ]) await assertFails(setDoc(doc(database, `users/${ownerUid}/favorites/es-en-other`), invalid))
+})
+
 test('everything outside the user documents is denied', async () => {
   const database = owner()
   await assertFails(setDoc(doc(database, `users/${ownerUid}/settings/other`), { theme: 'dark' }))
