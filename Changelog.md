@@ -10,6 +10,10 @@ Unreleased by hand when you want them clearer.
 
 ## Unreleased
 
+_Nothing yet._
+
+## [v0.5.0] - 2026-11-09
+
 - Favorites: a star on every answer of "¿Cómo se dice?" (and of the Despensa) saves the search
   with its translations. "Favoritos", folded at the bottom of "Buscar", lists them with a filter,
   newest first or A–Z; tap one to search it again, or its star to remove it (with undo). Saved
@@ -96,6 +100,7 @@ Unreleased by hand when you want them clearer.
 - Login, "Acerca de" (About) and the sync status come from firebase-app-kit's shared UI.
 - Installable PWA that opens offline.
 
+[v0.5.0]: https://github.com/luiz1919/labia-app/compare/v0.4.1...v0.5.0
 [v0.4.1]: https://github.com/luiz1919/labia-app/compare/v0.4.0...v0.4.1
 [v0.4.0]: https://github.com/luiz1919/labia-app/compare/v0.3.1...v0.4.0
 [v0.3.1]: https://github.com/luiz1919/labia-app/compare/v0.3.0...v0.3.1
