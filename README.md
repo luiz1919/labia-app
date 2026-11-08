@@ -35,7 +35,7 @@ bottom bar has five tabs:
 
   Every engine answer has a star: it saves the query, its direction and the first translations
   of that answer (up to 8) as a favorite; tapping it again removes it. "Favoritos"
-  (Favorites), at the bottom of the screen, lists them with a filter (by the query or its
+  (Favorites), at the bottom of the screen and folded by default (tap to open), lists them with a filter (by the query or its
   translations, ignoring accents), "Recientes" (newest first) or "A–Z", the direction when it
   is not the current one, a listen button, and the star to remove one ("Deshacer", undo, for a
   few seconds). Tapping a favorite searches it again in its direction, as if sent with Enter.

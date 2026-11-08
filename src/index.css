@@ -263,8 +263,13 @@ input::placeholder { color: #8c8186; }
 .star-button:hover { background: var(--accent-soft); color: var(--accent); }
 .star-button.star-on { color: #d99a00; }
 .star-button.star-on:hover { background: var(--warning-soft); color: #b37f00; }
-.favorites { display: flex; flex-direction: column; gap: 12px; margin-top: 12px; padding-top: 22px; border-top: 1px solid var(--border); }
-.empty-state + .favorites { margin-top: 0; padding-top: 0; border-top: 0; }
+.favorites { margin-top: 12px; border-top: 1px solid var(--border); }
+.empty-state + .favorites { margin-top: 0; border-top: 0; }
+.favorites-summary { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 56px; padding: 10px 0; cursor: pointer; list-style: none; }
+.favorites-summary::-webkit-details-marker { display: none; }
+.favorites-chevron { flex: 0 0 auto; color: var(--muted); transition: transform .15s; }
+.favorites[open] .favorites-chevron { transform: rotate(180deg); }
+.favorites-body { display: flex; flex-direction: column; gap: 12px; padding-bottom: 8px; }
 .favorites-title { display: flex; align-items: center; gap: 8px; font-size: 20px; }
 .favorites-title svg { color: #d99a00; }
 .favorites-tools { display: flex; flex-direction: column; gap: 10px; }
