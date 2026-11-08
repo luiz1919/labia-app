@@ -10,6 +10,10 @@ Unreleased by hand when you want them clearer.
 
 ## Unreleased
 
+_Nothing yet._
+
+## [v0.2.0] - 2026-11-08
+
 - New bottom bar with four tabs: "Buscar", "Aprender" (the four content sections, now with a
   back link), "Pronunciar" and "Asistente"; "Ajustes" (Settings) is the gear in the header.
 - "Escuchar" (Listen) buttons on every word, expression and example, with the device voice and
@@ -40,4 +44,5 @@ Unreleased by hand when you want them clearer.
 - Login, "Acerca de" (About) and the sync status come from firebase-app-kit's shared UI.
 - Installable PWA that opens offline.
 
+[v0.2.0]: https://github.com/luiz1919/labia-app/compare/v0.1.0...v0.2.0
 [v0.1.0]: https://github.com/luiz1919/labia-app/releases/tag/v0.1.0
