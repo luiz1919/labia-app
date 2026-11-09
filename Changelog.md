@@ -10,6 +10,10 @@ Unreleased by hand when you want them clearer.
 
 ## Unreleased
 
+_Nothing yet._
+
+## [v0.6.0] - 2026-11-09
+
 - Feedback ("Comentarios"): an icon next to the sync status to report something that does not
   work or suggest an improvement, with up to 3 screenshots and optional technical details. Every
   user sees the list (to avoid repeating a suggestion), only the author edits their text, and the
@@ -108,6 +112,7 @@ Unreleased by hand when you want them clearer.
 - Login, "Acerca de" (About) and the sync status come from firebase-app-kit's shared UI.
 - Installable PWA that opens offline.
 
+[v0.6.0]: https://github.com/luiz1919/labia-app/compare/v0.5.1...v0.6.0
 [v0.5.1]: https://github.com/luiz1919/labia-app/compare/v0.5.0...v0.5.1
 [v0.5.0]: https://github.com/luiz1919/labia-app/compare/v0.4.1...v0.5.0
 [v0.4.1]: https://github.com/luiz1919/labia-app/compare/v0.4.0...v0.4.1
