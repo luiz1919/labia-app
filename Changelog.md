@@ -12,6 +12,10 @@ Unreleased by hand when you want them clearer.
 
 _Nothing yet._
 
+## [v0.5.1] - 2026-11-09
+
+- Deps: firebase-app-kit v0.11.0 (sync status in a centred dialog)
+
 ## [v0.5.0] - 2026-11-09
 
 - Favorites: a star on every answer of "¿Cómo se dice?" (and of the Despensa) saves the search
@@ -100,6 +104,7 @@ _Nothing yet._
 - Login, "Acerca de" (About) and the sync status come from firebase-app-kit's shared UI.
 - Installable PWA that opens offline.
 
+[v0.5.1]: https://github.com/luiz1919/labia-app/compare/v0.5.0...v0.5.1
 [v0.5.0]: https://github.com/luiz1919/labia-app/compare/v0.4.1...v0.5.0
 [v0.4.1]: https://github.com/luiz1919/labia-app/compare/v0.4.0...v0.4.1
 [v0.4.0]: https://github.com/luiz1919/labia-app/compare/v0.3.1...v0.4.0
