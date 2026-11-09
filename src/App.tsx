@@ -3,13 +3,13 @@ import { signOut } from 'firebase/auth'
 import type { User } from 'firebase/auth'
 import { ArrowLeft, LogOut, Settings } from 'lucide-react'
 import { useAuthUser } from 'firebase-app-kit/react'
-import { AboutButton, SyncStatus } from 'firebase-app-kit/ui'
+import { AboutButton, FeedbackButton, SyncStatus } from 'firebase-app-kit/ui'
 import { BUILD_INFO } from './buildInfo'
 import BottomNav from './components/BottomNav'
 import EnginePreferencesProvider from './components/EnginePreferencesProvider'
 import PairPicker from './components/PairPicker'
 import SpeechProvider from './components/SpeechProvider'
-import { auth } from './firebase'
+import { auth, db } from './firebase'
 import type { LanguageCode } from './languages'
 import LoginScreen from './LoginScreen'
 import { screenFromHash, tabOf } from './screens'
@@ -72,6 +72,7 @@ function Home({ user, loggingOut, onLogout }: { user: User; loggingOut: boolean;
         <div className="header-brand"><a className="brand" href="#/" aria-label="Labia, inicio"><img src="/icons/labia.svg" width="36" height="36" alt="" /><span>Labia</span></a><AboutButton appName="Labia" build={BUILD_INFO} /></div>
         <div className="account-actions">
           <span className="account-email" title={user.email ?? ''}>{user.email}</span>
+          <FeedbackButton db={db} user={user} appName="Labia" build={BUILD_INFO} githubRepo="luiz1919/labia-app" />
           <SyncStatus state={settings.syncState} error={settings.error} details={SYNC_DETAILS} />
           <a className="icon-button" href="#/ajustes" aria-label="Ajustes" title="Ajustes" aria-current={screen === 'ajustes' ? 'page' : undefined}><Settings size={20} /></a>
           <button className="icon-button" type="button" onClick={onLogout} disabled={loggingOut} aria-label="Cerrar sesión" title="Cerrar sesión"><LogOut size={20} /></button>

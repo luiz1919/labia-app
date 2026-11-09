@@ -2,6 +2,7 @@ import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { after, before, beforeEach, test } from 'node:test'
 import { assertFails, assertSucceeds, initializeTestEnvironment } from '@firebase/rules-unit-testing'
+import { feedbackRulesTests } from 'firebase-app-kit/rules-testing'
 import { deleteDoc, deleteField, doc, getDoc, serverTimestamp, setDoc, Timestamp, updateDoc } from 'firebase/firestore'
 
 const projectId = 'demo-labia'
@@ -173,3 +174,6 @@ test('everything outside the user documents is denied', async () => {
   await assertFails(setDoc(doc(database, `users/${ownerUid}/notebook/entry`), { term: 'hola' }))
   await assertFails(getDoc(doc(database, 'languages/es')))
 })
+
+// In-app feedback ("Comentarios"): firebase-app-kit's tests of its rules block, run against this file.
+feedbackRulesTests({ environment: () => environment, assertSucceeds, assertFails, rules: readFileSync(new URL('../firestore.rules', import.meta.url), 'utf8') })

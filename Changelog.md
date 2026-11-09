@@ -10,7 +10,11 @@ Unreleased by hand when you want them clearer.
 
 ## Unreleased
 
-_Nothing yet._
+- Feedback ("Comentarios"): an icon next to the sync status to report something that does not
+  work or suggest an improvement, with up to 3 screenshots and optional technical details. Every
+  user sees the list (to avoid repeating a suggestion), only the author edits their text, and the
+  admin answers, sets the status and the version that solved it, or deletes. From
+  firebase-app-kit v0.12.0; Firestore `feedback/` and `admins/` (new rules).
 
 ## [v0.5.1] - 2026-11-09
 
