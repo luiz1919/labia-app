@@ -12,6 +12,10 @@ Unreleased by hand when you want them clearer.
 
 _Nothing yet._
 
+## [v0.6.1] - 2026-11-10
+
+- Deps: firebase-app-kit v0.13.0 (feedback with title and description)
+
 ## [v0.6.0] - 2026-11-09
 
 - Feedback ("Comentarios"): an icon next to the sync status to report something that does not
@@ -112,6 +116,7 @@ _Nothing yet._
 - Login, "Acerca de" (About) and the sync status come from firebase-app-kit's shared UI.
 - Installable PWA that opens offline.
 
+[v0.6.1]: https://github.com/luiz1919/labia-app/compare/v0.6.0...v0.6.1
 [v0.6.0]: https://github.com/luiz1919/labia-app/compare/v0.5.1...v0.6.0
 [v0.5.1]: https://github.com/luiz1919/labia-app/compare/v0.5.0...v0.5.1
 [v0.5.0]: https://github.com/luiz1919/labia-app/compare/v0.4.1...v0.5.0
