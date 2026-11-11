@@ -10,7 +10,17 @@ Unreleased by hand when you want them clearer.
 
 ## Unreleased
 
-_Nothing yet._
+- "Acerca de" (About) moves into "Ajustes": a new last row opens firebase-app-kit's About screen
+  (`#/acerca`) with the version, "Entorno" (Pruebas, for admins), technology, privacy and links. The underlined link in the header
+  is gone; the sign-in screen has an info icon instead.
+- Deps: firebase-app-kit v0.15.0.
+- "Pruebas": a second Firebase project with test data (`labia-app-dev`, `firebaseConfig.dev`), from
+  firebase-app-kit v0.14.0. Admins switch in "Acerca de" > "Entorno"; in Pruebas an orange band
+  says the data is not real, "Volver a Real" is always there (also on the sign-in screen) and
+  "Datos de prueba" adds 20, 120 or 500 words to the pantry ("Despensa") and the favorites, taken
+  from the app's idioms, phrasal verbs and false friends (never repeating what you already have),
+  or deletes all your test pantry words and favorites (the language pair and AI keys stay).
+  Feedback sent in Pruebas stays there. Each deploy also publishes the Firestore rules to `labia-app-dev`.
 
 ## [v0.6.1] - 2026-11-10
 

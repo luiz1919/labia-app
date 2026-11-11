@@ -1,15 +1,16 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { signOut } from 'firebase/auth'
 import type { User } from 'firebase/auth'
 import { ArrowLeft, LogOut, Settings } from 'lucide-react'
-import { useAuthUser } from 'firebase-app-kit/react'
-import { AboutButton, FeedbackButton, SyncStatus } from 'firebase-app-kit/ui'
+import { useAuthUser, useFeedbackAdmin } from 'firebase-app-kit/react'
+import { AboutPage, EnvBanner, FeedbackButton, SyncStatus } from 'firebase-app-kit/ui'
+import { ABOUT } from './about'
 import { BUILD_INFO } from './buildInfo'
 import BottomNav from './components/BottomNav'
 import EnginePreferencesProvider from './components/EnginePreferencesProvider'
 import PairPicker from './components/PairPicker'
 import SpeechProvider from './components/SpeechProvider'
-import { auth, db } from './firebase'
+import { auth, db, environment } from './firebase'
 import type { LanguageCode } from './languages'
 import LoginScreen from './LoginScreen'
 import { screenFromHash, tabOf } from './screens'
@@ -25,6 +26,7 @@ import PronounceScreen from './screens/PronounceScreen'
 import SearchScreen from './screens/SearchScreen'
 import SettingsScreen from './screens/SettingsScreen'
 import { sharedQuery } from './share'
+import { testDataActions } from './testData'
 import useAiSettings from './useAiSettings'
 import useUserSettings from './useUserSettings'
 
@@ -51,6 +53,12 @@ function Home({ user, loggingOut, onLogout }: { user: User; loggingOut: boolean;
   const settings = useUserSettings(user.uid)
   const ai = useAiSettings(user.uid)
   const screen = useScreen()
+  // "Pruebas" (dev project): admins may switch to it in "Acerca de", where the test data tools live.
+  const isAdmin = useFeedbackAdmin(db, user.uid)
+  const testData = useMemo(
+    () => (db && environment.current === 'dev' ? testDataActions(db, user.uid, environment) : undefined),
+    [user.uid],
+  )
   const { pair } = settings
   // Text shared from another app (Android "Share" > Labia) arrives as ?text=... and goes to the search.
   const [term, setTerm] = useState(() => sharedQuery(window.location.search))
@@ -68,20 +76,21 @@ function Home({ user, loggingOut, onLogout }: { user: User; loggingOut: boolean;
 
   return (
     <div className="app-shell">
+      <EnvBanner environment={environment} />
       <header className="app-header">
-        <div className="header-brand"><a className="brand" href="#/" aria-label="Labia, inicio"><img src="/icons/labia.svg" width="36" height="36" alt="" /><span>Labia</span></a><AboutButton appName="Labia" build={BUILD_INFO} /></div>
+        <div className="header-brand"><a className="brand" href="#/" aria-label="Labia, inicio"><img src="/icons/labia.svg" width="36" height="36" alt="" /><span>Labia</span></a></div>
         <div className="account-actions">
           <span className="account-email" title={user.email ?? ''}>{user.email}</span>
-          <FeedbackButton db={db} user={user} appName="Labia" build={BUILD_INFO} githubRepo="luiz1919/labia-app" />
+          <FeedbackButton db={db} user={user} appName="Labia" build={BUILD_INFO} githubRepo="luiz1919/labia-app" environment={environment} />
           <SyncStatus state={settings.syncState} error={settings.error} details={SYNC_DETAILS} />
-          <a className="icon-button" href="#/ajustes" aria-label="Ajustes" title="Ajustes" aria-current={screen === 'ajustes' ? 'page' : undefined}><Settings size={20} /></a>
+          <a className="icon-button" href="#/ajustes" aria-label="Ajustes" title="Ajustes" aria-current={screen === 'ajustes' || screen === 'acerca' ? 'page' : undefined}><Settings size={20} /></a>
           <button className="icon-button" type="button" onClick={onLogout} disabled={loggingOut} aria-label="Cerrar sesión" title="Cerrar sesión"><LogOut size={20} /></button>
         </div>
       </header>
       <main>
         {settings.error && <p className="error-message" role="alert">{settings.error}</p>}
         {tab === 'aprender' && screen !== 'aprender' && <a className="back-link" href="#/aprender"><ArrowLeft size={18} aria-hidden="true" />Aprender</a>}
-        {screen !== 'ajustes' && <PairPicker pair={pair} onChange={settings.changePair} />}
+        {screen !== 'ajustes' && screen !== 'acerca' && <PairPicker pair={pair} onChange={settings.changePair} />}
         {screen === 'buscar' && <SearchScreen uid={user.uid} pair={pair} term={term} onTermChange={setTerm} onPairChange={settings.changePair} settings={ai.settings} />}
         {screen === 'aprender' && <LearnScreen pair={pair} />}
         {screen === 'expresiones' && <IdiomsScreen pair={pair} />}
@@ -92,6 +101,7 @@ function Home({ user, loggingOut, onLogout }: { user: User; loggingOut: boolean;
         {screen === 'despensa' && <PantryScreen uid={user.uid} pair={pair} settings={ai.settings} onSearch={searchFor} />}
         {screen === 'asistente' && <AssistantScreen pair={pair} settings={ai.settings} ready={ai.ready} onSearch={searchFor} />}
         {screen === 'ajustes' && <SettingsScreen pair={pair} settings={ai.settings} actions={ai.actions} error={ai.error} />}
+        {screen === 'acerca' && <AboutPage {...ABOUT} environment={environment} canSwitchEnvironment={isAdmin} testData={testData} back={{ label: 'Ajustes', href: '#/ajustes' }} />}
       </main>
       <BottomNav current={tab} />
     </div>

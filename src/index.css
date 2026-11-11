@@ -27,6 +27,7 @@
   --kit-input-border: var(--input-border);
   --kit-danger: var(--danger);
   --kit-radius: 8px;
+  --kit-card-radius: 14px;
   --kit-success: var(--success);
   --kit-success-soft: var(--success-soft);
   --kit-warning: var(--warning);
@@ -71,6 +72,7 @@ label { font-size: 14px; font-weight: 500; }
 main { flex: 1; min-width: 0; width: min(100%, 760px); margin: 0 auto; padding: 24px 20px calc(var(--nav-height) + 40px + env(safe-area-inset-bottom)); }
 .session-loading { min-height: 100dvh; display: grid; place-items: center; padding: 24px; color: var(--muted); font-size: 14px; }
 .session-error { margin: 0; }
+.login-shell .header-brand { width: 100%; justify-content: space-between; }
 .login-main { flex: initial; width: min(100%, 440px); margin: 48px auto 0; padding-bottom: 40px; }
 .login-heading { display: flex; flex-direction: column; align-items: flex-start; gap: 24px; margin-bottom: 30px; }
 

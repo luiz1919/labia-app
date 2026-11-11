@@ -1,9 +1,10 @@
-import { ArrowDown, ArrowUp, Volume2 } from 'lucide-react'
+import { ArrowDown, ArrowUp, ChevronRight, Info, Volume2 } from 'lucide-react'
 import type { AiSettings, AiSettingsActions } from 'firebase-app-kit/ai'
 import { AiSettingsPanel } from 'firebase-app-kit/ui'
 import { ENGINES, engineUnavailable } from '../engines'
 import { moveEngine } from '../engines/order'
 import { LANGUAGES } from '../languages'
+import { screenHash } from '../screens'
 import type { LanguageCode, LanguagePair } from '../languages'
 import { useEnginePreferences } from '../preferencesContext'
 import { ACCENT_OPTIONS, canSpeak, speak } from '../speech'
@@ -45,7 +46,7 @@ function EngineOrder({ pair, settings }: { pair: LanguagePair; settings: AiSetti
   )
 }
 
-/** "Ajustes": search engines and voices (this device) and the AI keys (the account). */
+/** "Ajustes": search engines and voices (this device), the AI keys (the account) and the link to "Acerca de". */
 export default function SettingsScreen({ pair, settings, actions, error }: { pair: LanguagePair; settings: AiSettings; actions: AiSettingsActions; error: string }) {
   const { accents, setAccent } = useSpeech()
 
@@ -83,6 +84,14 @@ export default function SettingsScreen({ pair, settings, actions, error }: { pai
         </p>
         {error && <p className="error-message" role="alert">{error}</p>}
         <AiSettingsPanel settings={settings} actions={actions} />
+      </section>
+
+      <section className="settings-group" aria-label="Acerca de Labia">
+        <a className="tile" href={screenHash('acerca')}>
+          <span className="tile-icon"><Info size={22} aria-hidden="true" /></span>
+          <span className="tile-text"><strong>Acerca de Labia</strong><span>Versión, tecnología, privacidad y enlaces</span></span>
+          <ChevronRight size={20} aria-hidden="true" />
+        </a>
       </section>
     </section>
   )

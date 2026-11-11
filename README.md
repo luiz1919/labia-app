@@ -90,8 +90,10 @@ bottom bar has five tabs:
     in "Ajustes" (British or American, Spain or Mexico).
 
 Every word, expression and example has an "Escuchar" (Listen) button. "Ajustes" (the gear in
-the header) holds the accent for each language (stored on the device, like the voices) and the
-AI keys (stored in the account).
+the header) holds the accent for each language (stored on the device, like the voices), the
+AI keys (stored in the account) and, last, "Acerca de Labia" (About, `#/acerca`):
+firebase-app-kit's About screen with the version, technology, a draft privacy note and links,
+its texts in [src/about.ts](src/about.ts). The sign-in screen has it behind an info icon.
 
 The section is in the URL (`#/expresiones`), so the phone's back button works. The app is an
 installable PWA that opens offline, and the bundled content works offline too. The external
@@ -215,7 +217,7 @@ npm run dev
 ```
 
 From firebase-app-kit come the deploy, the Firebase startup, the service worker, the "Acerca
-de" (About) build data and the shared UI: the login form, "Acerca de" and the sync status
+de" (About) build data and the shared UI: the login form, "Acerca de" (screen and info icon) and the sync status
 (`firebase-app-kit/ui`, themed with the `--kit-*` variables in `src/index.css`). It is
 installed from GitHub (`github:luiz1919/firebase-app-kit#vX.Y.Z`): while that repo is private,
 `npm install` and `npm ci` need access to it through your git credentials.

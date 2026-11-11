@@ -6,5 +6,6 @@ dist/
 .firebase/
 .firebaserc
 firebaseConfig
+firebaseConfig.dev
 *-debug.log*
 .DS_Store
