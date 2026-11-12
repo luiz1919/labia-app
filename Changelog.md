@@ -12,6 +12,10 @@ Unreleased by hand when you want them clearer.
 
 _Nothing yet._
 
+## [v0.8.2] - 2026-11-12
+
+- Improve feedback filters
+
 ## [v0.8.1] - 2026-11-12
 
 - "Buscar": the false-friend warnings ("Ojo: falso amigo") are folded too, like in "Falsos
@@ -148,6 +152,7 @@ _Nothing yet._
 - Login, "Acerca de" (About) and the sync status come from firebase-app-kit's shared UI.
 - Installable PWA that opens offline.
 
+[v0.8.2]: https://github.com/luiz1919/labia-app/compare/v0.8.1...v0.8.2
 [v0.8.1]: https://github.com/luiz1919/labia-app/compare/v0.8.0...v0.8.1
 [v0.8.0]: https://github.com/luiz1919/labia-app/compare/v0.7.0...v0.8.0
 [v0.7.0]: https://github.com/luiz1919/labia-app/compare/v0.6.1...v0.7.0
