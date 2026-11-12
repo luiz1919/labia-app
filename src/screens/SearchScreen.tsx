@@ -28,11 +28,11 @@ import type { Favorite } from '../favorites'
 import type { OwnIdiom } from '../ownIdioms.ts'
 import useFavorites from '../useFavorites'
 
-function Results({ title, children }: { title: string; children: ReactNode }) {
+function Results({ title, folded = false, children }: { title: string; folded?: boolean; children: ReactNode }) {
   return (
     <section className="result-group" aria-label={title}>
       <h2 className="eyebrow">{title}</h2>
-      <div className="card-list">{children}</div>
+      <div className={folded ? 'card-list fold-list' : 'card-list'}>{children}</div>
     </section>
   )
 }
@@ -228,7 +228,7 @@ export default function SearchScreen({ uid, pair, term, onTermChange, onPairChan
         </div>
       ) : (
         <>
-          {results.falseFriends.length > 0 && <Results title="Ojo: falso amigo">{results.falseFriends.map(match => <FalseFriendCard key={match.entry.id} match={match} pair={pair} />)}</Results>}
+          {results.falseFriends.length > 0 && <Results title="Ojo: falso amigo" folded>{results.falseFriends.map(match => <FalseFriendCard key={match.entry.id} match={match} pair={pair} />)}</Results>}
           {engineTerm && <EngineAnswers term={engineTerm} submitted={submitted} context={engineContext} favorites={favorites} />}
           {pronunciations.length > 0 && <Results title="Pronunciación"><PronunciationCard word={term.trim().toLowerCase()} list={pronunciations} /></Results>}
           {results.idioms.length > 0 && <Results title="Expresiones">{results.idioms.map(match => <IdiomCard key={`${match.own ? 'own' : 'app'}-${match.idiom.id}`} idiom={match.idiom} expression={match.expression} pair={pair} own={match.own} />)}</Results>}

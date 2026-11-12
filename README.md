@@ -19,7 +19,7 @@ the same on every device; offline, the change is kept on the device and uploaded
 bottom bar has five tabs:
 
 - **"Buscar" (Search), "¿Cómo se dice?" (How do you say it?)**: type a word, a verb or an
-  expression. Labia's own content shows while typing (false friends first, as a warning, then
+  expression. Labia's own content shows while typing (false friends first, as a folded warning, then
   idioms, phrasal verbs and differences). Under "Traducción" (Translation), the first search
   engine of the user's order answers inside the app, and "Ver también en" (See also in) asks
   the others (see [Search engines](#search-engines)). WordReference, Reverso Context and Google
@@ -50,7 +50,7 @@ bottom bar has five tabs:
     undo), here and in "Buscar", in both directions. "Todas / Mías" (All / Mine) filters them,
     and a filter with no match offers "Añadirla como tuya" (Add it as yours), prefilled.
   - "Falsos amigos" (False friends): words that look alike but mean something else (*actually*
-    ≠ *actualmente*), folded to the two words until tapped (a single match opens by itself),
+    ≠ *actualmente*), folded to the two words until tapped (a single match of the filter opens by itself; in "Buscar" they stay folded),
     with what each one really means and examples.
   - "Diferencias" (Differences): words that are easy to mix up (*make/do*, ser/estar...), with
     the short rule, examples and a mini quiz ("Ponte a prueba", test yourself).

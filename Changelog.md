@@ -10,7 +10,8 @@ Unreleased by hand when you want them clearer.
 
 ## Unreleased
 
-_Nothing yet._
+- "Buscar": the false-friend warnings ("Ojo: falso amigo") are folded too, like in "Falsos
+  amigos": only the two words until tapped, so they no longer push the translation down.
 
 ## [v0.8.0] - 2026-11-12
 

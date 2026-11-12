@@ -17,7 +17,7 @@ export default function FalseFriendsScreen({ pair }: { pair: LanguagePair }) {
       <FilterField value={filter} onChange={setFilter} label={`Buscar una palabra en ${sourceName}`} lang={pair.source} />
       <p className="result-count" role="status">{matches.length === 1 ? '1 palabra' : `${matches.length} palabras`}</p>
       <div className="card-list fold-list">
-        {matches.map(match => <FalseFriendCard key={match.entry.id} match={match} pair={pair} folded open={matches.length === 1} />)}
+        {matches.map(match => <FalseFriendCard key={match.entry.id} match={match} pair={pair} open={matches.length === 1} />)}
       </div>
     </section>
   )
