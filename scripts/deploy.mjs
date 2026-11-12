@@ -8,6 +8,9 @@ await deploy({
   // "Pruebas" (test data, firebaseConfig.dev): the deploy checks its config and publishes the
   // Firestore rules there too.
   devProjectId: 'labia-app-dev',
+  // And to production, in the same deploy and before Hosting: the new version never goes live
+  // with older rules (a new collection would be denied until someone published them by hand).
+  publishFirestoreRules: true,
   root: new URL('../', import.meta.url),
   // Each release adds its version to the changelog (docs(changelog): vX.Y.Z commit).
   changelog: 'Changelog.md',
