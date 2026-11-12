@@ -10,7 +10,16 @@ Unreleased by hand when you want them clearer.
 
 ## Unreleased
 
-_Nothing yet._
+- "Falsos amigos" (False friends) is now an accordion: each pair shows only the two words
+  (*actually ≠ actualmente*) until tapped; the meanings, examples and speak buttons are inside.
+  A filter with a single match opens it by itself. In "Buscar" the warning stays unfolded.
+- Own expressions: "Expresiones" > "Nueva expresión" adds your own idioms with the same fields
+  as Labia's (several forms per language, literal translation, register, regions, other forms
+  to search by, meaning and example). They appear with a "Tuya" badge in "Expresiones" and
+  "Buscar", in both directions, with a pencil to edit or delete them (with undo), and a
+  "Todas / Mías" switch. A filter with no match offers "Añadirla como tuya", prefilled. Stored in
+  Firestore `users/{uid}/idioms` (new rules). In Pruebas, "Borrar mis datos de prueba" also
+  deletes them.
 
 ## [v0.7.0] - 2026-11-11
 

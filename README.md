@@ -44,9 +44,14 @@ bottom bar has five tabs:
   - "Expresiones" (Idioms): the real equivalent in the other language, not the literal
     translation, with the meaning, the word-for-word translation ("Literalmente"), the register
     ("Coloquial" informal, "Vulgar", "Formal"), the region (Spain, Latin America, UK, US) and an
-    example.
+    example. "Nueva expresión" (New expression) adds your own with the same fields (several
+    forms per language, each with its literal translation, register, regions and other forms to
+    search by); they show with a "Tuya" (Yours) badge and a pencil to edit or delete them (with
+    undo), here and in "Buscar", in both directions. "Todas / Mías" (All / Mine) filters them,
+    and a filter with no match offers "Añadirla como tuya" (Add it as yours), prefilled.
   - "Falsos amigos" (False friends): words that look alike but mean something else (*actually*
-    ≠ *actualmente*), with what each one really means and examples.
+    ≠ *actualmente*), folded to the two words until tapped (a single match opens by itself),
+    with what each one really means and examples.
   - "Diferencias" (Differences): words that are easy to mix up (*make/do*, ser/estar...), with
     the short rule, examples and a mini quiz ("Ponte a prueba", test yourself).
   - "Phrasal verbs": searchable in English (*get over*) or by their meaning (superar), and
@@ -95,7 +100,8 @@ AI keys (stored in the account) and, last, "Acerca de Labia" (About, `#/acerca`)
 firebase-app-kit's About screen with the version, technology, a draft privacy note and links,
 its texts in [src/about.ts](src/about.ts). The sign-in screen has it behind an info icon.
 
-The section is in the URL (`#/expresiones`), so the phone's back button works. The app is an
+The section is in the URL (`#/expresiones`), so the phone's back button works; the expression
+form too (`#/expresiones/nueva`, `#/expresiones/editar/{id}`): back closes it. The app is an
 installable PWA that opens offline, and the bundled content works offline too. The external
 links, the recordings, speech recognition and the AI need a connection.
 
@@ -189,6 +195,7 @@ language does not need new rules.
 | `users/{uid}/settings/ai` | `{ providers: { gemini?, openai?, anthropic?: { apiKey, model, models } }, lastProvider, anthropicFallback }`: the user's AI keys (firebase-app-kit/ai shape) |
 | `users/{uid}/favorites/{source}-{target}-{query}` | `{ term, source, target, translations, engine, createdAt }`: a starred search (the id is the direction plus the normalized, URL-encoded query, so the same search is one favorite on every device; up to 8 translations; `createdAt` is the server time of the last star) |
 | `users/{uid}/pantry/{id}` | `{ text, lang, createdAt, reviewed }`: a word of the "Despensa" (up to 100 characters; `createdAt` set by the server, never changed) |
+| `users/{uid}/idioms/{id}` | `{ meaning, expressions, example, createdAt, updatedAt }`: an expression of the user's own, shaped like the bundled `Idiom` (`expressions` = `{ lang, text, literal?, register?, regions?, keywords? }`, 2 to 20; `createdAt` set by the server on the first save, `updatedAt` on every save). The rules bound the sizes; the app reads the items defensively ([src/ownIdioms.ts](src/ownIdioms.ts)) |
 
 Everything else is denied by [firestore.rules](firestore.rules). The accents are not in
 Firestore: they are stored on the device (`localStorage`, key `labia.accents`). New collections need

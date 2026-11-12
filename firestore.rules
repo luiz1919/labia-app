@@ -71,6 +71,29 @@ service cloud.firestore {
       allow create, update: if request.auth != null && request.auth.uid == uid
         && favoriteId.size() <= 1000 && validFavorite(request.resource.data);
     }
+    // users/{uid}/idioms/{idiomId}: the user's own expressions ("Expresiones" > "Nueva
+    // expresión"), shaped like the bundled idioms (src/data/types.ts Idiom). Rules cannot look
+    // inside every list item, so they bound the sizes and the app reads the content defensively
+    // (src/ownIdioms.ts parseOwnIdiom). createdAt is the server time of the first save.
+    function validOwnIdiom(data) {
+      return data.keys().hasOnly(['meaning', 'expressions', 'example', 'createdAt', 'updatedAt'])
+        && data.keys().hasAll(['meaning', 'expressions', 'example', 'createdAt', 'updatedAt'])
+        && data.meaning is string && data.meaning.size() <= 500
+        && data.expressions is list && data.expressions.size() >= 2 && data.expressions.size() <= 20
+        && data.expressions[0] is map && data.expressions[1] is map
+        && data.example is map && data.example.size() <= 10
+        && data.createdAt is timestamp
+        && data.updatedAt == request.time;
+    }
+    match /users/{uid}/idioms/{idiomId} {
+      allow read, delete: if request.auth != null && request.auth.uid == uid;
+      allow create: if request.auth != null && request.auth.uid == uid
+        && idiomId.size() <= 100 && validOwnIdiom(request.resource.data)
+        && request.resource.data.createdAt == request.time;
+      allow update: if request.auth != null && request.auth.uid == uid
+        && validOwnIdiom(request.resource.data)
+        && request.resource.data.createdAt == resource.data.createdAt;
+    }
 
     // <firebase-app-kit:feedback>
     // In-app feedback ("Comentarios"), copied from firebase-app-kit/rules/feedback.rules. Do not

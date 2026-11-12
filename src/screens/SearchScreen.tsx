@@ -25,6 +25,7 @@ import { accentVariety } from '../speech'
 import { useSpeech } from '../speechContext'
 import { sourceLinks } from '../sources'
 import type { Favorite } from '../favorites'
+import type { OwnIdiom } from '../ownIdioms.ts'
 import useFavorites from '../useFavorites'
 
 function Results({ title, children }: { title: string; children: ReactNode }) {
@@ -181,9 +182,9 @@ function EngineAnswers({ term, submitted, context, favorites }: { term: string; 
   )
 }
 
-export default function SearchScreen({ uid, pair, term, onTermChange, onPairChange, settings }: { uid: string; pair: LanguagePair; term: string; onTermChange: (term: string) => void; onPairChange: (pair: LanguagePair) => void; settings: AiSettings }) {
+export default function SearchScreen({ uid, pair, term, onTermChange, onPairChange, settings, ownIdioms }: { uid: string; pair: LanguagePair; term: string; onTermChange: (term: string) => void; onPairChange: (pair: LanguagePair) => void; settings: AiSettings; ownIdioms: readonly OwnIdiom[] }) {
   const favorites = useFavorites(uid)
-  const results = searchContent(term, pair)
+  const results = searchContent(term, pair, ownIdioms)
   const links = sourceLinks(term, pair)
   const partner = phrasalVerbPartner(pair)
   const pronunciations = usePronunciations(term, pair.source === 'en')
@@ -230,7 +231,7 @@ export default function SearchScreen({ uid, pair, term, onTermChange, onPairChan
           {results.falseFriends.length > 0 && <Results title="Ojo: falso amigo">{results.falseFriends.map(match => <FalseFriendCard key={match.entry.id} match={match} pair={pair} />)}</Results>}
           {engineTerm && <EngineAnswers term={engineTerm} submitted={submitted} context={engineContext} favorites={favorites} />}
           {pronunciations.length > 0 && <Results title="Pronunciación"><PronunciationCard word={term.trim().toLowerCase()} list={pronunciations} /></Results>}
-          {results.idioms.length > 0 && <Results title="Expresiones">{results.idioms.map(match => <IdiomCard key={match.idiom.id} idiom={match.idiom} expression={match.expression} pair={pair} />)}</Results>}
+          {results.idioms.length > 0 && <Results title="Expresiones">{results.idioms.map(match => <IdiomCard key={`${match.own ? 'own' : 'app'}-${match.idiom.id}`} idiom={match.idiom} expression={match.expression} pair={pair} own={match.own} />)}</Results>}
           {partner && results.phrasalVerbs.length > 0 && <Results title="Phrasal verbs">{results.phrasalVerbs.map(phrasal => <PhrasalVerbCard key={phrasal.id} phrasal={phrasal} partner={partner} />)}</Results>}
           {results.confusables.length > 0 && <Results title="Diferencias">{results.confusables.map(entry => <ConfusableCard key={entry.id} entry={entry} pair={pair} />)}</Results>}
           <details className="more-sources">

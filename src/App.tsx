@@ -13,7 +13,7 @@ import SpeechProvider from './components/SpeechProvider'
 import { auth, db, environment } from './firebase'
 import type { LanguageCode } from './languages'
 import LoginScreen from './LoginScreen'
-import { screenFromHash, tabOf } from './screens'
+import { hashDetail, screenFromHash, tabOf } from './screens'
 import type { ScreenId } from './screens'
 import AssistantScreen from './screens/AssistantScreen'
 import ConfusablesScreen from './screens/ConfusablesScreen'
@@ -26,8 +26,10 @@ import PronounceScreen from './screens/PronounceScreen'
 import SearchScreen from './screens/SearchScreen'
 import SettingsScreen from './screens/SettingsScreen'
 import { sharedQuery } from './share'
+import { idiomRoute } from './subpage'
 import { testDataActions } from './testData'
 import useAiSettings from './useAiSettings'
+import useOwnIdioms from './useOwnIdioms'
 import useUserSettings from './useUserSettings'
 
 const SYNC_DETAILS = {
@@ -35,24 +37,32 @@ const SYNC_DETAILS = {
   offline: 'Sin conexión: los cambios se guardan en este dispositivo y se subirán al volver la conexión.',
 }
 
-/** Current section, from the URL hash (#/expresiones). */
-function useScreen(): ScreenId {
-  const [screen, setScreen] = useState(() => screenFromHash(window.location.hash))
+function currentRoute(): { screen: ScreenId; detail: string[] } {
+  return { screen: screenFromHash(window.location.hash), detail: hashDetail(window.location.hash) }
+}
+
+/** Current section and the page below it, from the URL hash (#/expresiones/nueva). */
+function useScreen() {
+  const [route, setRoute] = useState(currentRoute)
   useEffect(() => {
     const update = () => {
-      setScreen(screenFromHash(window.location.hash))
+      setRoute(currentRoute())
       window.scrollTo(0, 0)
     }
     window.addEventListener('hashchange', update)
     return () => window.removeEventListener('hashchange', update)
   }, [])
-  return screen
+  return route
 }
 
 function Home({ user, loggingOut, onLogout }: { user: User; loggingOut: boolean; onLogout: () => void }) {
   const settings = useUserSettings(user.uid)
   const ai = useAiSettings(user.uid)
-  const screen = useScreen()
+  // Read here because "Buscar", "Aprender" and "Expresiones" all show them.
+  const ownIdioms = useOwnIdioms(user.uid)
+  const { screen, detail } = useScreen()
+  // The expression form brings its own way back and keeps the pair it was opened with.
+  const subpage = screen === 'expresiones' && idiomRoute(detail).page !== 'list'
   // "Pruebas" (dev project): admins may switch to it in "Acerca de", where the test data tools live.
   const isAdmin = useFeedbackAdmin(db, user.uid)
   const testData = useMemo(
@@ -89,11 +99,11 @@ function Home({ user, loggingOut, onLogout }: { user: User; loggingOut: boolean;
       </header>
       <main>
         {settings.error && <p className="error-message" role="alert">{settings.error}</p>}
-        {tab === 'aprender' && screen !== 'aprender' && <a className="back-link" href="#/aprender"><ArrowLeft size={18} aria-hidden="true" />Aprender</a>}
-        {screen !== 'ajustes' && screen !== 'acerca' && <PairPicker pair={pair} onChange={settings.changePair} />}
-        {screen === 'buscar' && <SearchScreen uid={user.uid} pair={pair} term={term} onTermChange={setTerm} onPairChange={settings.changePair} settings={ai.settings} />}
-        {screen === 'aprender' && <LearnScreen pair={pair} />}
-        {screen === 'expresiones' && <IdiomsScreen pair={pair} />}
+        {tab === 'aprender' && screen !== 'aprender' && !subpage && <a className="back-link" href="#/aprender"><ArrowLeft size={18} aria-hidden="true" />Aprender</a>}
+        {screen !== 'ajustes' && screen !== 'acerca' && !subpage && <PairPicker pair={pair} onChange={settings.changePair} />}
+        {screen === 'buscar' && <SearchScreen uid={user.uid} pair={pair} term={term} onTermChange={setTerm} onPairChange={settings.changePair} settings={ai.settings} ownIdioms={ownIdioms.idioms} />}
+        {screen === 'aprender' && <LearnScreen pair={pair} ownIdioms={ownIdioms.idioms} />}
+        {screen === 'expresiones' && <IdiomsScreen pair={pair} detail={detail} ownIdioms={ownIdioms} />}
         {screen === 'falsos-amigos' && <FalseFriendsScreen pair={pair} />}
         {screen === 'diferencias' && <ConfusablesScreen pair={pair} />}
         {screen === 'phrasal-verbs' && <PhrasalVerbsScreen pair={pair} />}

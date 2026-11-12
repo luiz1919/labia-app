@@ -1,5 +1,6 @@
 // The app's sections. The current one lives in the URL hash (#/expresiones), so the phone's back
-// button and links work without a router. The bottom bar has five tabs; the content sections
+// button and links work without a router. A section can have pages below it, after its id
+// (#/expresiones/nueva). The bottom bar has five tabs; the content sections
 // hang from "Aprender" (Learn) and "Ajustes" (Settings) from the header; "Acerca de" (About) from Ajustes.
 
 export const TABS = [
@@ -33,6 +34,17 @@ export const DEFAULT_SCREEN: ScreenId = 'buscar'
 export function screenFromHash(hash: string): ScreenId {
   const id = hash.replace(/^#\/?/, '').split(/[/?]/)[0]
   return SCREENS.find(screen => screen.id === id)?.id ?? DEFAULT_SCREEN
+}
+
+/** What follows the screen in the hash: '#/expresiones/editar/abc' -> ['editar', 'abc']. */
+export function hashDetail(hash: string): string[] {
+  return hash.replace(/^#\/?/, '').split('?')[0].split('/').slice(1).filter(Boolean).map(part => {
+    try {
+      return decodeURIComponent(part)
+    } catch {
+      return part
+    }
+  })
 }
 
 export function screenHash(id: ScreenId): string {

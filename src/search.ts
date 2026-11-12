@@ -64,18 +64,24 @@ export interface IdiomMatch {
   idiom: Idiom
   /** The expression in the source language that matched (or the main one). */
   expression: IdiomExpression
+  /** Written by the user (src/ownIdioms.ts), not bundled with the app. */
+  own: boolean
 }
 
-/** Idioms said in both languages of the pair whose source-language form matches the query (all, without a query). */
-export function findIdioms(query: string, pair: LanguagePair, limit?: number): IdiomMatch[] {
+/**
+ * Idioms said in both languages of the pair whose source-language form matches the query (all,
+ * without a query). `own` are the user's expressions, searched together with the bundled ones.
+ */
+export function findIdioms(query: string, pair: LanguagePair, limit?: number, own: readonly Idiom[] = []): IdiomMatch[] {
   const normalized = normalize(query)
   const entries: Ranked<IdiomMatch>[] = []
-  for (const idiom of IDIOMS) {
+  const all = [...own.map(idiom => ({ idiom, own: true })), ...IDIOMS.map(idiom => ({ idiom, own: false }))]
+  for (const { idiom, own: isOwn } of all) {
     if (!idiom.expressions.some(expression => expression.lang === pair.target)) continue
     let best: Ranked<IdiomMatch> | null = null
     for (const expression of idiom.expressions.filter(candidate => candidate.lang === pair.source)) {
       const value = normalized ? bestScore(normalized, [expression.text, ...(expression.keywords ?? [])]) : 1
-      if (value > (best?.score ?? 0)) best = { item: { idiom, expression }, score: value, label: expression.text }
+      if (value > (best?.score ?? 0)) best = { item: { idiom, expression, own: isOwn }, score: value, label: expression.text }
     }
     if (best) entries.push(best)
   }
@@ -162,11 +168,12 @@ export interface SearchResults {
   confusables: Confusable[]
 }
 
-export function searchContent(query: string, pair: LanguagePair): SearchResults {
+/** `ownIdioms` are the user's own expressions, searched with the bundled ones. */
+export function searchContent(query: string, pair: LanguagePair, ownIdioms: readonly Idiom[] = []): SearchResults {
   if (normalize(query).length < MIN_QUERY_LENGTH) return { falseFriends: [], idioms: [], phrasalVerbs: [], confusables: [] }
   return {
     falseFriends: findFalseFriends(query, pair, 3),
-    idioms: findIdioms(query, pair, 5),
+    idioms: findIdioms(query, pair, 5, ownIdioms),
     phrasalVerbs: findPhrasalVerbs(query, pair, 6),
     confusables: findConfusables(query, pair, 2),
   }

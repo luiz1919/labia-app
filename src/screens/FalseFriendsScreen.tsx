@@ -13,11 +13,11 @@ export default function FalseFriendsScreen({ pair }: { pair: LanguagePair }) {
   return (
     <section className="screen" aria-labelledby="false-friends-title">
       <h1 id="false-friends-title">Falsos amigos</h1>
-      <p className="screen-intro">Palabras que se parecen pero no significan lo mismo. Al buscar una en «Buscar» también te avisamos.</p>
+      <p className="screen-intro">Palabras que se parecen pero no significan lo mismo. Toca una para ver qué significa cada una. Al buscar una en «Buscar» también te avisamos.</p>
       <FilterField value={filter} onChange={setFilter} label={`Buscar una palabra en ${sourceName}`} lang={pair.source} />
       <p className="result-count" role="status">{matches.length === 1 ? '1 palabra' : `${matches.length} palabras`}</p>
-      <div className="card-list">
-        {matches.map(match => <FalseFriendCard key={match.entry.id} match={match} pair={pair} />)}
+      <div className="card-list fold-list">
+        {matches.map(match => <FalseFriendCard key={match.entry.id} match={match} pair={pair} folded open={matches.length === 1} />)}
       </div>
     </section>
   )

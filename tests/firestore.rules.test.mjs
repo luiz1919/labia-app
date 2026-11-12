@@ -168,6 +168,60 @@ test('nobody else can see or change the favorites, and malformed ones are reject
   ]) await assertFails(setDoc(doc(database, `users/${ownerUid}/favorites/es-en-other`), invalid))
 })
 
+const idiomPath = `users/${ownerUid}/idioms/idiom-1`
+const ownIdiom = () => ({
+  meaning: 'Estar harto.',
+  expressions: [
+    { lang: 'es', text: 'estar hasta el moño', literal: { en: 'to be up to the bun' }, register: 'informal', regions: ['es-ES'], keywords: ['estoy hasta el moño'] },
+    { lang: 'en', text: 'to be fed up' },
+  ],
+  example: { es: 'Estoy hasta el moño.', en: "I'm fed up." },
+  createdAt: serverTimestamp(),
+  updatedAt: serverTimestamp(),
+})
+
+test('owner can write, edit, read and delete their own expressions', async () => {
+  const database = owner()
+  await assertSucceeds(setDoc(doc(database, idiomPath), ownIdiom()))
+  const { createdAt: _createdAt, ...edit } = ownIdiom()
+  await assertSucceeds(updateDoc(doc(database, idiomPath), { ...edit, meaning: '', example: {} }))
+  const saved = (await assertSucceeds(getDoc(doc(database, idiomPath)))).data()
+  assert.equal(saved.meaning, '')
+  assert.equal(saved.expressions.length, 2)
+  await assertSucceeds(deleteDoc(doc(database, idiomPath)))
+  // Undo of a removal writes it again with the same id.
+  await assertSucceeds(setDoc(doc(database, idiomPath), ownIdiom()))
+})
+
+test('nobody else can see or change the own expressions, and malformed ones are rejected', async () => {
+  await setDoc(doc(owner(), idiomPath), ownIdiom())
+  for (const context of [environment.authenticatedContext('other-user'), environment.unauthenticatedContext()]) {
+    const database = context.firestore()
+    await assertFails(getDoc(doc(database, idiomPath)))
+    await assertFails(setDoc(doc(database, `users/${ownerUid}/idioms/idiom-2`), ownIdiom()))
+    await assertFails(updateDoc(doc(database, idiomPath), { meaning: 'x', updatedAt: serverTimestamp() }))
+    await assertFails(deleteDoc(doc(database, idiomPath)))
+  }
+  const database = owner()
+  const expression = { lang: 'es', text: 'x' }
+  for (const invalid of [
+    { ...ownIdiom(), meaning: 'x'.repeat(501) },
+    { ...ownIdiom(), meaning: 7 },
+    { ...ownIdiom(), expressions: [expression] },
+    { ...ownIdiom(), expressions: Array.from({ length: 21 }, () => expression) },
+    { ...ownIdiom(), expressions: ['es', 'en'] },
+    { ...ownIdiom(), expressions: 'estar hasta el moño' },
+    { ...ownIdiom(), example: 'Estoy hasta el moño.' },
+    { ...ownIdiom(), extra: true },
+    { ...ownIdiom(), createdAt: Timestamp.fromMillis(0) },
+    { ...ownIdiom(), updatedAt: Timestamp.fromMillis(0) },
+    { meaning: 'Estar harto.', expressions: ownIdiom().expressions, createdAt: serverTimestamp(), updatedAt: serverTimestamp() },
+  ]) await assertFails(setDoc(doc(database, `users/${ownerUid}/idioms/idiom-3`), invalid))
+  await assertFails(setDoc(doc(database, `users/${ownerUid}/idioms/${'x'.repeat(101)}`), ownIdiom()))
+  await assertFails(updateDoc(doc(database, idiomPath), { createdAt: Timestamp.fromMillis(0), updatedAt: serverTimestamp() }))
+  await assertFails(updateDoc(doc(database, idiomPath), { meaning: 'sin sello' }))
+})
+
 test('everything outside the user documents is denied', async () => {
   const database = owner()
   await assertFails(setDoc(doc(database, `users/${ownerUid}/settings/other`), { theme: 'dark' }))

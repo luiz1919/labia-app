@@ -1,6 +1,6 @@
 // "Datos de prueba" in "Acerca de", only in "Pruebas" (the dev Firebase project): creates pantry
-// words and favorites (src/testDataPlan.ts), and deletes the user's pantry and favorites there.
-// The language pair and the AI settings are left as they are.
+// words and favorites (src/testDataPlan.ts), and deletes the user's pantry, favorites and own
+// expressions there. The language pair and the AI settings are left as they are.
 import { assertDevEnvironment, commitInBatches } from 'firebase-app-kit'
 import type { AppEnvironment, BatchWrite, WriteProgress } from 'firebase-app-kit'
 import type { TestDataActions } from 'firebase-app-kit/ui'
@@ -14,6 +14,7 @@ export function testDataActions(db: Firestore, uid: string, environment: AppEnvi
   const sizes = (Object.keys(TEST_DATA_SIZES) as TestDataSizeId[]).map(id => ({ id, label: TEST_DATA_SIZES[id].label }))
   const pantryCollection = () => collection(db, 'users', uid, 'pantry')
   const favoritesCollection = () => collection(db, 'users', uid, 'favorites')
+  const idiomsCollection = () => collection(db, 'users', uid, 'idioms')
 
   async function generate(sizeId: string, onProgress: (progress: WriteProgress) => void): Promise<string> {
     assertDevEnvironment(environment)
@@ -39,11 +40,11 @@ export function testDataActions(db: Firestore, uid: string, environment: AppEnvi
 
   async function clear(onProgress: (progress: WriteProgress) => void): Promise<string> {
     assertDevEnvironment(environment)
-    const [pantry, favorites] = await Promise.all([getDocs(pantryCollection()), getDocs(favoritesCollection())])
-    const writes: BatchWrite[] = [...pantry.docs, ...favorites.docs].map((item): BatchWrite => batch => batch.delete(item.ref))
+    const [pantry, favorites, idioms] = await Promise.all([getDocs(pantryCollection()), getDocs(favoritesCollection()), getDocs(idiomsCollection())])
+    const writes: BatchWrite[] = [...pantry.docs, ...favorites.docs, ...idioms.docs].map((item): BatchWrite => batch => batch.delete(item.ref))
     await commitInBatches(db, writes, onProgress)
     const n = (value: number) => value.toLocaleString('es')
-    return `Borradas ${n(pantry.size)} palabras de la Despensa y ${n(favorites.size)} favoritos de Pruebas. Tus idiomas y tus claves de IA se mantienen.`
+    return `Borradas ${n(pantry.size)} palabras de la Despensa, ${n(favorites.size)} favoritos y ${n(idioms.size)} expresiones tuyas de Pruebas. Tus idiomas y tus claves de IA se mantienen.`
   }
 
   return { sizes, generate, clear }
