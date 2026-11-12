@@ -10,6 +10,10 @@ Unreleased by hand when you want them clearer.
 
 ## Unreleased
 
+_Nothing yet._
+
+## [v0.10.0] - 2026-11-13
+
 - Feedback: editing your own feedback can add screenshots, up to 3 in all (firebase-app-kit v0.20.0;
   the Firestore rules changed: publish them).
 
@@ -157,6 +161,7 @@ Unreleased by hand when you want them clearer.
 - Login, "Acerca de" (About) and the sync status come from firebase-app-kit's shared UI.
 - Installable PWA that opens offline.
 
+[v0.10.0]: https://github.com/luiz1919/labia-app/compare/v0.9.0...v0.10.0
 [v0.9.0]: https://github.com/luiz1919/labia-app/compare/v0.8.2...v0.9.0
 [v0.8.2]: https://github.com/luiz1919/labia-app/compare/v0.8.1...v0.8.2
 [v0.8.1]: https://github.com/luiz1919/labia-app/compare/v0.8.0...v0.8.1
