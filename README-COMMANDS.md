@@ -61,15 +61,18 @@ step that fails:
    `npm run lint` and `npm test`.
 4. Commits `Changelog.md` (`docs(changelog): vX.Y.Z`), then the new version in `package.json`
    and `package-lock.json` (`chore(release): vX.Y.Z`), and creates the tag `vX.Y.Z` locally.
-5. Runs `npm run build` (the version and commit appear in "Acerca de", About) and publishes
-   **Firebase Hosting only**, to the explicitly given project.
+5. Runs `npm run build` (the version and commit appear in "Acerca de", About) and publishes, to
+   the explicitly given projects: `firestore.rules` to Pruebas (`labia-app-dev`), then to
+   production (`labia-app-6636b`), then **Firebase Hosting**. The new version never goes live
+   with older rules.
 6. Pushes both commits and the tag to GitHub (`git push --atomic`).
 
-If the build or the publish fails, the commits, the tag, the version and the changelog are
-undone: nothing is published and nothing reaches GitHub. If only the final push fails, the app
-is already published: run the `git push --atomic ...` command the script prints.
+If the build or a publish step fails, the commits, the tag, the version and the changelog are
+undone and nothing reaches GitHub; rules already published stay (the error says where). If only
+the final push fails, the app is already published: run the `git push --atomic ...` command the
+script prints.
 
-It does not change users, data or Firestore rules.
+It does not change users or data.
 
 ## Validate without publishing
 
@@ -151,8 +154,10 @@ While **firebase-app-kit is private**, GitHub needs a token to download it:
 
 ## Publish Firestore rules: only when appropriate
 
-**This changes the database's real permissions.** Run it only after reviewing an intentional
-change to `firestore.rules` (and after `npm run test:rules` passes):
+Every `npm run deploy` already publishes `firestore.rules` to Pruebas and production, right
+before Hosting. By hand only to publish rules without a release. **This changes the database's
+real permissions.** Run it only after reviewing an intentional change to `firestore.rules` (and
+after `npm run test:rules` passes):
 
 ```sh
 firebase deploy --config /Users/santaml2/Documents/labs/LabiaApp/firebase.json --only firestore:rules --project labia-app-6636b --non-interactive

@@ -249,7 +249,8 @@ Before the first use, in the console:
 
 1. Authentication > Sign-in method: enable Email/Password, and add your user (see
    [Access](#access)).
-2. Publish the Firestore rules (the deploy does not publish them):
+2. Publish the Firestore rules before the first use (later, every `npm run deploy` publishes
+   them too):
 
    ```sh
    firebase deploy --config firebase.json --only firestore:rules --project labia-app-6636b
@@ -270,8 +271,8 @@ Commit your changes first: the script refuses to start with uncommitted changes.
 shared release flow from firebase-app-kit: checks git, runs `npm ci`, checks that the Firebase
 config belongs to `labia-app-6636b`, runs lint and tests, adds the version to
 [Changelog.md](Changelog.md), creates the release commit and tag `vX.Y.Z`, builds, publishes
-**Hosting only** and pushes the commits and the tag. If the build or the publish fails, the
-release is undone. Details, including the one-time setup before the first release, in
+`firestore.rules` (Pruebas, then production) and Hosting, and pushes the commits and the tag. If
+the build or a publish step fails, the release is undone. Details, including the one-time setup before the first release, in
 [README-COMMANDS.md](README-COMMANDS.md).
 
 ## PWA
