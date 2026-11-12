@@ -10,7 +10,8 @@ Unreleased by hand when you want them clearer.
 
 ## Unreleased
 
-_Nothing yet._
+- Feedback: editing your own feedback can add screenshots, up to 3 in all (firebase-app-kit v0.20.0;
+  the Firestore rules changed: publish them).
 
 ## [v0.9.0] - 2026-11-12
 
