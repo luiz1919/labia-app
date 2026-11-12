@@ -10,6 +10,10 @@ Unreleased by hand when you want them clearer.
 
 ## Unreleased
 
+_Nothing yet._
+
+## [v0.8.0] - 2026-11-12
+
 - "Falsos amigos" (False friends) is now an accordion: each pair shows only the two words
   (*actually ≠ actualmente*) until tapped; the meanings, examples and speak buttons are inside.
   A filter with a single match opens it by itself. In "Buscar" the warning stays unfolded.
@@ -139,6 +143,7 @@ Unreleased by hand when you want them clearer.
 - Login, "Acerca de" (About) and the sync status come from firebase-app-kit's shared UI.
 - Installable PWA that opens offline.
 
+[v0.8.0]: https://github.com/luiz1919/labia-app/compare/v0.7.0...v0.8.0
 [v0.7.0]: https://github.com/luiz1919/labia-app/compare/v0.6.1...v0.7.0
 [v0.6.1]: https://github.com/luiz1919/labia-app/compare/v0.6.0...v0.6.1
 [v0.6.0]: https://github.com/luiz1919/labia-app/compare/v0.5.1...v0.6.0
