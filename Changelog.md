@@ -12,6 +12,10 @@ Unreleased by hand when you want them clearer.
 
 _Nothing yet._
 
+## [v0.9.0] - 2026-11-12
+
+- Bump kit to v0.18.0
+
 ## [v0.8.2] - 2026-11-12
 
 - Improve feedback filters
@@ -152,6 +156,7 @@ _Nothing yet._
 - Login, "Acerca de" (About) and the sync status come from firebase-app-kit's shared UI.
 - Installable PWA that opens offline.
 
+[v0.9.0]: https://github.com/luiz1919/labia-app/compare/v0.8.2...v0.9.0
 [v0.8.2]: https://github.com/luiz1919/labia-app/compare/v0.8.1...v0.8.2
 [v0.8.1]: https://github.com/luiz1919/labia-app/compare/v0.8.0...v0.8.1
 [v0.8.0]: https://github.com/luiz1919/labia-app/compare/v0.7.0...v0.8.0
