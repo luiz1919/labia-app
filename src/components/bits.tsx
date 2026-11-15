@@ -8,10 +8,11 @@ import SpeakButton from './SpeakButton'
 
 /** Register (when not neutral) and regions of an expression. */
 export function Badges({ register, regions }: { register?: Register; regions?: readonly Region[] }) {
-  if ((!register || register === 'neutral') && !regions?.length) return null
+  const shown = register && register !== 'neutral' && register !== 'unknown' ? register : undefined
+  if (!shown && !regions?.length) return null
   return (
     <span className="badges">
-      {register && register !== 'neutral' && <span className={`badge badge-${register}`}>{REGISTER_LABELS[register]}</span>}
+      {shown && <span className={`badge badge-${shown}`}>{REGISTER_LABELS[shown]}</span>}
       {regions?.map(region => <span key={region} className="badge badge-region">{REGION_LABELS[region]}</span>)}
     </span>
   )

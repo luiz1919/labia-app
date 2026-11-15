@@ -37,7 +37,7 @@ export default function IdiomsScreen({ pair, detail, ownIdioms }: { pair: Langua
         pair={pair}
         initial={emptyDraft(pair, prefill)}
         editing={false}
-        onSave={draft => { ownIdioms.save(draft, pair); setShown('all'); closeSubpage(LIST_HASH) }}
+        onSave={(draft, chosen) => { ownIdioms.save(draft, chosen); setShown('all'); closeSubpage(LIST_HASH) }}
         onCancel={() => closeSubpage(LIST_HASH)}
       />
     )
@@ -59,7 +59,7 @@ export default function IdiomsScreen({ pair, detail, ownIdioms }: { pair: Langua
         pair={pair}
         initial={draftFromIdiom(idiom, pair)}
         editing
-        onSave={draft => { ownIdioms.save(draft, pair, idiom); closeSubpage(LIST_HASH) }}
+        onSave={(draft, chosen) => { ownIdioms.save(draft, chosen, idiom); closeSubpage(LIST_HASH) }}
         onCancel={() => closeSubpage(LIST_HASH)}
         onDelete={() => { ownIdioms.remove(idiom); setRemoved(idiom); closeSubpage(LIST_HASH) }}
       />
@@ -101,8 +101,8 @@ export default function IdiomsScreen({ pair, detail, ownIdioms }: { pair: Langua
           <a href={NEW_IDIOM_HASH} onClick={event => { setPrefill(typed); openSubpage(event) }}>Añadirla como tuya</a>
         </p>
       )}
-      <div className="card-list">
-        {matches.map(match => <IdiomCard key={`${match.own ? 'own' : 'app'}-${match.idiom.id}`} idiom={match.idiom} expression={match.expression} pair={pair} own={match.own} />)}
+      <div className="card-list fold-list">
+        {matches.map(match => <IdiomCard key={`${match.own ? 'own' : 'app'}-${match.idiom.id}`} idiom={match.idiom} expression={match.expression} pair={pair} own={match.own} open={matches.length === 1 && typed !== ''} />)}
       </div>
     </section>
   )

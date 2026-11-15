@@ -61,7 +61,7 @@ export function emptyExpression(lang: LanguageCode, text = ''): ExpressionDraft 
 
 /** A blank form; `text` prefills the first expression in the source language (the filter typed in "Expresiones"). */
 export function emptyDraft(pair: LanguagePair, text = ''): IdiomDraft {
-  return { meaning: '', source: [emptyExpression(pair.source, text.trim().slice(0, MAX_OWN_TEXT))], target: [emptyExpression(pair.target)], exampleSource: '', exampleTarget: '' }
+  return { meaning: '', source: [{ ...emptyExpression(pair.source, text.trim().slice(0, MAX_OWN_TEXT)), register: 'unknown' }], target: [{ ...emptyExpression(pair.target), register: 'unknown' }], exampleSource: '', exampleTarget: '' }
 }
 
 function expressionDraft(expression: IdiomExpression, pair: LanguagePair): ExpressionDraft {

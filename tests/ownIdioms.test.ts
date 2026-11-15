@@ -123,3 +123,12 @@ test('own expressions are searched with the bundled ones and marked as own', () 
   assert.ok(findIdioms('', esEn).every(match => !match.own))
   assert.equal(searchContent('hasta el moño', esEn, own).idioms[0].idiom.id, 'mine')
 })
+
+test('a new form starts with an unknown register, which is stored and read back', () => {
+  const draft = emptyDraft(esEn, 'estar en babia')
+  draft.target[0].text = 'to daydream'
+  const data = ownIdiomData(draft, esEn)
+  assert.deepEqual(data.expressions.map(expression => expression.register), ['unknown', 'unknown'])
+  const parsed = parseOwnIdiom('x', { ...data, createdAt: null }, LANGS)
+  assert.equal(parsed?.expressions[0].register, 'unknown')
+})

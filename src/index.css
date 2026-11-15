@@ -215,7 +215,7 @@ input::placeholder { color: #8c8186; }
 .tile-text small { color: var(--accent); font-size: 12px; font-weight: 600; }
 .segmented { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 4px; padding: 4px; border-radius: 12px; background: #f1e8eb; }
 .segmented button { min-height: 40px; border: 0; border-radius: 9px; background: transparent; color: var(--muted); font-size: 14px; font-weight: 600; }
-.segmented button[aria-selected='true'] { background: #fff; color: var(--accent); box-shadow: 0 1px 3px rgb(42 35 38 / 12%); }
+.segmented button[aria-selected='true'], .segmented button[aria-checked='true'] { background: #fff; color: var(--accent); box-shadow: 0 1px 3px rgb(42 35 38 / 12%); }
 .settings-group { display: flex; flex-direction: column; gap: 14px; padding-top: 6px; }
 .settings-group + .settings-group { padding-top: 22px; border-top: 1px solid var(--border); }
 .chip-icon { display: inline-flex; align-items: center; gap: 6px; }

@@ -6,7 +6,8 @@ import type { LanguageCode } from '../languages'
 /** The same text in several languages: { es: '...', en: '...' }. */
 export type Translations = Partial<Record<LanguageCode, string>>
 
-export type Register = 'neutral' | 'informal' | 'vulgar' | 'formal'
+/** `unknown`: the user who wrote it was not sure which register it is. */
+export type Register = 'neutral' | 'informal' | 'vulgar' | 'formal' | 'unknown'
 
 /** BCP 47 tag of the place where an expression is used (es-419 = Latin America). */
 export type Region = 'es-ES' | 'es-419' | 'en-GB' | 'en-US'
@@ -16,6 +17,7 @@ export const REGISTER_LABELS: Readonly<Record<Register, string>> = {
   informal: 'Coloquial',
   vulgar: 'Vulgar',
   formal: 'Formal',
+  unknown: 'No sé',
 }
 
 export const REGION_LABELS: Readonly<Record<Region, string>> = {
