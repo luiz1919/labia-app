@@ -12,6 +12,10 @@ Unreleased by hand when you want them clearer.
 
 _Nothing yet._
 
+## [v0.11.0] - 2026-11-15
+
+- New expression forms
+
 ## [v0.10.0] - 2026-11-13
 
 - Feedback: editing your own feedback can add screenshots, up to 3 in all (firebase-app-kit v0.20.0;
@@ -161,6 +165,7 @@ _Nothing yet._
 - Login, "Acerca de" (About) and the sync status come from firebase-app-kit's shared UI.
 - Installable PWA that opens offline.
 
+[v0.11.0]: https://github.com/luiz1919/labia-app/compare/v0.10.0...v0.11.0
 [v0.10.0]: https://github.com/luiz1919/labia-app/compare/v0.9.0...v0.10.0
 [v0.9.0]: https://github.com/luiz1919/labia-app/compare/v0.8.2...v0.9.0
 [v0.8.2]: https://github.com/luiz1919/labia-app/compare/v0.8.1...v0.8.2
