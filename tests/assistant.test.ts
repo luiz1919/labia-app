@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { dictionaryRequest, naturalnessRequest, parseCandidates, parseDictionaryEntry, parseLines, parseNaturalness, photoTextRequest, tipOfTongueRequest } from '../src/assistant.ts'
+import { dictionaryRequest, naturalnessRequest, parseCandidates, parseDictionaryEntry, parseLines, parseNaturalness, parseReadingText, photoTextRequest, readingTextRequest, tipOfTongueRequest } from '../src/assistant.ts'
 
 type Schema = { type?: string; properties?: Record<string, Schema>; required?: string[]; additionalProperties?: boolean; items?: Schema }
 
@@ -72,4 +72,17 @@ test('the AI dictionary entry asks for a strict schema and becomes engine groups
   assert.deepEqual(answer.groups[0].examples, [{ text: 'I miss you.', lang: 'en', translation: 'Te echo de menos.', translationLang: 'es' }])
   assert.deepEqual(answer.notes, ['No confundir con «to lose».'])
   assert.equal(parseDictionaryEntry({ entries: [{ translation: 'cuesta un huevo', register: 'vulgar', region: 'España' }] }, { source: 'en', target: 'es' }).groups[0].items[0].note, 'vulgar, España')
+})
+
+test('the reading text request is strict, keeps the topic in its tag and asks for no digits', () => {
+  const request = readingTextRequest('easy', 'viajes a Escocia', 'británico')
+  assertStrict(request.schema as Schema)
+  assert.match(request.system, /nivel fácil/)
+  assert.match(request.system, /Sin cifras/)
+  assert.match(request.system, /inglés británico/)
+  assert.equal(request.question, '<tema>\nviajes a Escocia\n</tema>')
+  assert.doesNotMatch(readingTextRequest('hard', '  ').system, /<tema>/)
+  assert.deepEqual(parseReadingText({ title: ' Viaje ', text: ' I like trains. ' }), { title: 'Viaje', text: 'I like trains.' })
+  assert.equal(parseReadingText({ text: 'Hello there' }).title, 'Texto de la IA')
+  assert.throws(() => parseReadingText({ title: 'x', text: '  ' }))
 })

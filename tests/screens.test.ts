@@ -11,6 +11,7 @@ test('the hash selects the screen and unknown hashes go to the search', () => {
   assert.equal(screenFromHash('#/diferencias/make-do'), 'diferencias')
   assert.equal(screenFromHash('#/ajustes'), 'ajustes')
   assert.equal(screenFromHash('#/acerca'), 'acerca')
+  assert.equal(screenFromHash('#/leer'), 'leer')
   assert.equal(screenFromHash('#/nope'), 'buscar')
 })
 
@@ -19,6 +20,7 @@ test('every screen round-trips through its hash and belongs to a tab, except set
   assert.equal(screenHash('buscar'), '#/')
   assert.equal(tabOf('falsos-amigos'), 'aprender')
   assert.equal(tabOf('asistente'), 'asistente')
+  assert.equal(tabOf('leer'), 'pronunciar')
   assert.equal(tabOf('ajustes'), null)
   assert.equal(tabOf('acerca'), null)
   for (const tab of TABS) assert.equal(tabOf(tab.id), tab.id, 'each tab has its own screen')

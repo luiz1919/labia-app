@@ -33,7 +33,7 @@ function beep(context: AudioContext | null, frequencies: readonly number[]) {
 }
 
 /** Keeps the screen on while listening: phones stop the microphone of a page when it turns off. */
-function keepScreenOn(lock: RefObject<WakeLockSentinel | null>, active: () => boolean) {
+export function keepScreenOn(lock: RefObject<WakeLockSentinel | null>, active: () => boolean) {
   if (!('wakeLock' in navigator)) return
   navigator.wakeLock.request('screen').then(sentinel => {
     if (active()) lock.current = sentinel

@@ -21,6 +21,7 @@ export const SCREENS = [
   { id: 'diferencias', label: 'Diferencias', tab: 'aprender' },
   { id: 'phrasal-verbs', label: 'Phrasal verbs', tab: 'aprender' },
   { id: 'pronunciar', label: 'Pronunciar', tab: 'pronunciar' },
+  { id: 'leer', label: 'Leer en voz alta', tab: 'pronunciar' },
   { id: 'despensa', label: 'Despensa', tab: 'despensa' },
   { id: 'asistente', label: 'Asistente', tab: 'asistente' },
   { id: 'ajustes', label: 'Ajustes', tab: null },

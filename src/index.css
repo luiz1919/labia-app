@@ -389,3 +389,31 @@ select.form-input { padding-block: 6px; }
   * { transition: none !important; scroll-behavior: auto !important; }
   .live-dot-on { animation: none; }
 }
+
+/* Read aloud */
+.text-choice { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; width: 100%; padding: 14px 16px; border: 1px solid var(--border); border-radius: 14px; background: #fff; color: inherit; text-align: left; }
+.text-choice:hover { border-color: var(--accent); }
+.text-choice-heading { display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; }
+.text-choice-heading strong { font-size: 17px; }
+.text-choice-focus { color: var(--accent); font-size: 12px; font-weight: 600; }
+.text-choice-snippet { color: var(--muted); font-size: 14px; line-height: 1.4; }
+.reading-text { font-size: 20px; line-height: 1.9; }
+.word { padding: 1px 3px; border-radius: 6px; }
+.word-done, .word-unread { color: var(--muted); }
+.word-good { background: var(--success-soft); }
+.word-bad { background: var(--warning-soft); color: var(--warning); text-decoration: underline dotted; text-underline-offset: 4px; }
+.word-horrible { background: #fbeeea; color: var(--danger); font-weight: 600; text-decoration: underline wavy; text-underline-offset: 4px; }
+.listen-status { color: var(--danger); font-size: 14px; font-weight: 600; }
+.stop-action { background: var(--danger); }
+.stop-action:hover:not(:disabled) { background: #8a3029; }
+.reading-score { font-size: 15px; color: var(--muted); }
+.reading-score strong { font-size: 44px; line-height: 1; color: var(--accent); }
+.grade-good { background: var(--success-soft); color: var(--success); }
+.grade-bad { background: var(--warning-soft); color: var(--warning); }
+.grade-horrible { background: #fbeeea; color: var(--danger); }
+.trouble-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.trouble-list li { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+.trouble-list strong { font-size: 18px; }
+.trouble-heard { color: var(--muted); font-size: 14px; }
+.text-input { width: 100%; height: 46px; padding: 10px 12px; border: 1px solid var(--input-border); border-radius: 12px; background: #fff; color: inherit; font-size: 16px; }
+.text-input:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }

@@ -156,6 +156,18 @@ test('a hidden page waits for resume(), and stop() ends it for good', () => {
   assert.equal(sessions.length, 2)
 })
 
+test('finish() stops the microphone but still takes the words understood on the way out', async () => {
+  const { session, sessions, phrases, listening, flush } = harness()
+  // A recognizer that delivers its last words when told to stop, as the browsers do.
+  sessions[0].stop = () => { sessions[0].say('the last words'); sessions[0].end() }
+  await session.finish()
+  assert.deepEqual(phrases, [['the last words']])
+  assert.equal(sessions[0].aborted, false)
+  assert.equal(listening.at(-1), false)
+  flush()
+  assert.equal(sessions.length, 1, 'it does not listen again')
+})
+
 // Push to talk: a fake recognizer whose stop() waits for the test to deliver the last words.
 function heldHarness() {
   const sessions: HeldRecognition[] = []

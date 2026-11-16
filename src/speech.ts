@@ -214,13 +214,25 @@ export interface ContinuousOptions {
   now?: () => number
 }
 
+export interface ContinuousListening {
+  /** Stops at once; what was being said and is not final yet is lost. */
+  stop: () => void
+  /** Starts listening again (the page is visible again). */
+  resume: () => void
+  /** Stops listening but waits for the last words to be understood (they arrive as phrases). */
+  finish: () => Promise<void>
+}
+
+/** After finish(), the browser gets this long to deliver the last words. */
+const FLUSH_MS = 1500
+
 /**
  * Keeps listening until stop(). Browsers end a recognition session after a silence or a minute
  * or so, so a new one starts as soon as the last one ends. Silence is normal; other errors are
  * retried with a growing pause, and listening stops after a few in a row or a fatal one (no
  * permission, no microphone).
  */
-export function listenContinuously(locale: string, handlers: ContinuousHandlers, options: ContinuousOptions = {}): { stop: () => void; resume: () => void } {
+export function listenContinuously(locale: string, handlers: ContinuousHandlers, options: ContinuousOptions = {}): ContinuousListening {
   const Constructor = options.Recognition === undefined ? recognitionConstructor() : options.Recognition
   const hidden = options.hidden ?? (() => typeof document !== 'undefined' && document.hidden)
   const later = options.later ?? ((callback: () => void, ms: number) => { window.setTimeout(callback, ms) })
@@ -228,6 +240,7 @@ export function listenContinuously(locale: string, handlers: ContinuousHandlers,
   let stopped = false
   let running: Recognition | null = null
   let failures = 0
+  let flushed: (() => void) | null = null
 
   function fail(message: string) {
     stopped = true
@@ -269,6 +282,7 @@ export function listenContinuously(locale: string, handlers: ContinuousHandlers,
       if (running !== recognition) return
       running = null
       handlers.onListening?.(false)
+      flushed?.()
       if (stopped) return
       if (FATAL_ERRORS.has(error)) fail(recognitionError(error))
       else retry(error, heard, startedAt)
@@ -287,7 +301,7 @@ export function listenContinuously(locale: string, handlers: ContinuousHandlers,
 
   if (!Constructor) {
     fail('Este navegador no reconoce la voz.')
-    return { stop: () => {}, resume: () => {} }
+    return { stop: () => {}, resume: () => {}, finish: () => Promise.resolve() }
   }
   start()
   return {
@@ -300,6 +314,18 @@ export function listenContinuously(locale: string, handlers: ContinuousHandlers,
       if (recognition) handlers.onListening?.(false)
     },
     resume: () => start(),
+    finish() {
+      if (stopped) return Promise.resolve()
+      stopped = true
+      const recognition = running
+      if (!recognition) return Promise.resolve()
+      return new Promise<void>(resolve => {
+        flushed = resolve
+        later(resolve, FLUSH_MS)
+        // stop(), not abort(): the words said before it still become a phrase.
+        recognition.stop()
+      })
+    },
   }
 }
 

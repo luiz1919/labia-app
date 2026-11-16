@@ -23,6 +23,7 @@ import LearnScreen from './screens/LearnScreen'
 import PantryScreen from './screens/PantryScreen'
 import PhrasalVerbsScreen from './screens/PhrasalVerbsScreen'
 import PronounceScreen from './screens/PronounceScreen'
+import ReadAloudScreen from './screens/ReadAloudScreen'
 import SearchScreen from './screens/SearchScreen'
 import SettingsScreen from './screens/SettingsScreen'
 import { sharedQuery } from './share'
@@ -100,7 +101,8 @@ function Home({ user, loggingOut, onLogout }: { user: User; loggingOut: boolean;
       <main>
         {settings.error && <p className="error-message" role="alert">{settings.error}</p>}
         {tab === 'aprender' && screen !== 'aprender' && !subpage && <a className="back-link" href="#/aprender"><ArrowLeft size={18} aria-hidden="true" />Aprender</a>}
-        {screen !== 'ajustes' && screen !== 'acerca' && !subpage && <PairPicker pair={pair} onChange={settings.changePair} />}
+        {screen === 'leer' && <a className="back-link" href="#/pronunciar"><ArrowLeft size={18} aria-hidden="true" />Pronunciar</a>}
+        {screen !== 'ajustes' && screen !== 'acerca' && screen !== 'leer' && !subpage && <PairPicker pair={pair} onChange={settings.changePair} />}
         {screen === 'buscar' && <SearchScreen uid={user.uid} pair={pair} term={term} onTermChange={setTerm} onPairChange={settings.changePair} settings={ai.settings} ownIdioms={ownIdioms.idioms} />}
         {screen === 'aprender' && <LearnScreen pair={pair} ownIdioms={ownIdioms.idioms} />}
         {screen === 'expresiones' && <IdiomsScreen pair={pair} detail={detail} ownIdioms={ownIdioms} />}
@@ -108,6 +110,7 @@ function Home({ user, loggingOut, onLogout }: { user: User; loggingOut: boolean;
         {screen === 'diferencias' && <ConfusablesScreen pair={pair} />}
         {screen === 'phrasal-verbs' && <PhrasalVerbsScreen pair={pair} />}
         {screen === 'pronunciar' && <PronounceScreen pair={pair} />}
+        {screen === 'leer' && <ReadAloudScreen settings={ai.settings} ready={ai.ready} />}
         {screen === 'despensa' && <PantryScreen uid={user.uid} pair={pair} settings={ai.settings} onSearch={searchFor} />}
         {screen === 'asistente' && <AssistantScreen pair={pair} settings={ai.settings} ready={ai.ready} onSearch={searchFor} />}
         {screen === 'ajustes' && <SettingsScreen pair={pair} settings={ai.settings} actions={ai.actions} error={ai.error} />}

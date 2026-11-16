@@ -10,7 +10,7 @@ Unreleased by hand when you want them clearer.
 
 ## Unreleased
 
-_Nothing yet._
+- Pronunciar: new "Leer en voz alta" section. Read an English text (bundled, your own or written by the AI) and see each word graded good, bad or horrible, with the words to practice.
 
 ## [v0.11.0] - 2026-11-15
 

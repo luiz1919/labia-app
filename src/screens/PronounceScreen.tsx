@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState } from 'react'
-import { Check, Mic, RefreshCw, Snail, Square, Volume2, X } from 'lucide-react'
+import { BookOpenText, Check, ChevronRight, Mic, RefreshCw, Snail, Square, Volume2, X } from 'lucide-react'
 import { MINIMAL_PAIRS } from '../data/minimalPairs'
 import { REGION_LABELS } from '../data/types'
 import type { MinimalPair } from '../data/types'
@@ -176,6 +176,11 @@ export default function PronounceScreen({ pair }: { pair: LanguagePair }) {
       <p className="screen-intro">Los sonidos del {languageName(lang).toLowerCase()} que más cuestan, con la voz de tu dispositivo. El acento se cambia en Ajustes. ¿No oyes nada? Sube el volumen y, en iPhone, quita el modo silencio.</p>
       {!canSpeak() && <p className="error-message">Este navegador no puede leer en voz alta.</p>}
       {!canRecognize() && <p className="card-note">Este navegador no reconoce la voz: puedes escuchar, pero no comprobar cómo lo dices (prueba con Chrome).</p>}
+      <a className="tile" href="#/leer">
+        <span className="tile-icon"><BookOpenText size={22} aria-hidden="true" /></span>
+        <span className="tile-text"><strong>Leer en voz alta</strong><span>Lee un texto en inglés y mira qué palabras salen bien, mal u horribles.</span></span>
+        <ChevronRight size={20} aria-hidden="true" />
+      </a>
       {pairs.length > 0 && <MinimalPairPractice key={`${lang}-${locale}`} pairs={pairs} lang={lang} locale={locale} />}
       <FreePractice key={lang} lang={lang} locale={locale} />
     </section>
