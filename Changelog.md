@@ -10,6 +10,10 @@ Unreleased by hand when you want them clearer.
 
 ## Unreleased
 
+_Nothing yet._
+
+## [v0.12.0] - 2026-11-16
+
 - Pronunciar: new "Leer en voz alta" section. Read an English text (bundled, your own or written by the AI) and see each word graded good, bad or horrible, with the words to practice.
 
 ## [v0.11.0] - 2026-11-15
@@ -165,6 +169,7 @@ Unreleased by hand when you want them clearer.
 - Login, "Acerca de" (About) and the sync status come from firebase-app-kit's shared UI.
 - Installable PWA that opens offline.
 
+[v0.12.0]: https://github.com/luiz1919/labia-app/compare/v0.11.0...v0.12.0
 [v0.11.0]: https://github.com/luiz1919/labia-app/compare/v0.10.0...v0.11.0
 [v0.10.0]: https://github.com/luiz1919/labia-app/compare/v0.9.0...v0.10.0
 [v0.9.0]: https://github.com/luiz1919/labia-app/compare/v0.8.2...v0.9.0
