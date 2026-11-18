@@ -12,6 +12,11 @@ Unreleased by hand when you want them clearer.
 
 _Nothing yet._
 
+## [v0.14.0] - 2026-11-19
+
+- X added to search bar
+- Improve readibility in pronunciar
+
 ## [v0.13.0] - 2026-11-19
 
 - Move cerrar sesion to settings
@@ -173,6 +178,7 @@ _Nothing yet._
 - Login, "Acerca de" (About) and the sync status come from firebase-app-kit's shared UI.
 - Installable PWA that opens offline.
 
+[v0.14.0]: https://github.com/luiz1919/labia-app/compare/v0.13.0...v0.14.0
 [v0.13.0]: https://github.com/luiz1919/labia-app/compare/v0.12.0...v0.13.0
 [v0.12.0]: https://github.com/luiz1919/labia-app/compare/v0.11.0...v0.12.0
 [v0.11.0]: https://github.com/luiz1919/labia-app/compare/v0.10.0...v0.11.0
