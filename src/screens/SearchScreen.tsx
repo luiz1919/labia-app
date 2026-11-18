@@ -204,6 +204,14 @@ export default function SearchScreen({ uid, pair, term, onTermChange, onPairChan
     if (document.activeElement instanceof HTMLElement) document.activeElement.blur()
   }
 
+  // The "x" empties the field, drops the pending answers and keeps the keyboard for the next word.
+  function clearTerm() {
+    onTermChange('')
+    settleNow('')
+    setSubmitted('')
+    document.getElementById('search-term')?.focus()
+  }
+
   // A favorite searches again, in its own direction, as if typed and sent with Enter.
   function openFavorite(favorite: Favorite) {
     if (favorite.pair.source !== pair.source || favorite.pair.target !== pair.target) onPairChange(favorite.pair)
@@ -219,6 +227,7 @@ export default function SearchScreen({ uid, pair, term, onTermChange, onPairChan
       <form className="search-form" role="search" onSubmit={submit}>
         <label className="sr-only" htmlFor="search-term">Palabra, verbo o expresión en {sourceName}</label>
         <input id="search-term" type="search" lang={pair.source} value={term} onChange={event => onTermChange(event.target.value)} placeholder={`Palabra, verbo o expresión en ${sourceName}`} autoComplete="off" autoCapitalize="none" spellCheck={false} enterKeyHint="search" maxLength={200} />
+        {term && <button className="search-clear" type="button" onClick={clearTerm} aria-label="Borrar lo escrito" title="Borrar"><X size={18} aria-hidden="true" /></button>}
       </form>
       <TextSources settings={settings} onText={onTermChange} />
       {links.length === 0 ? (
