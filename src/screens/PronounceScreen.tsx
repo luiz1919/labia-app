@@ -1,5 +1,7 @@
 import { useMemo, useRef, useState } from 'react'
-import { BookOpenText, Check, ChevronRight, Mic, RefreshCw, Snail, Square, Volume2, X } from 'lucide-react'
+import type { ReactNode } from 'react'
+import type { LucideIcon } from 'lucide-react'
+import { BookOpenText, Check, ChevronDown, ChevronRight, Ear, Mic, MicVocal, RefreshCw, Snail, Square, Volume2, X } from 'lucide-react'
 import { MINIMAL_PAIRS } from '../data/minimalPairs'
 import { REGION_LABELS } from '../data/types'
 import type { MinimalPair } from '../data/types'
@@ -58,6 +60,21 @@ function HeardMessage({ heard, lang, other }: { heard: Heard; lang: LanguageCode
   )
 }
 
+/** A practice block folded to its title until tapped; its state survives folding (the body stays mounted). */
+function Fold({ title, icon: Icon, badge, children }: { title: string; icon: LucideIcon; badge?: ReactNode; children: ReactNode }) {
+  return (
+    <details className="fold-card practice-fold">
+      <summary className="fold-summary">
+        <span className="tile-icon" aria-hidden="true"><Icon size={22} /></span>
+        <h2 className="fold-title">{title}</h2>
+        {badge}
+        <ChevronDown className="fold-chevron" size={20} aria-hidden="true" />
+      </summary>
+      <div className="fold-body">{children}</div>
+    </details>
+  )
+}
+
 function MinimalPairPractice({ pairs, lang, locale }: { pairs: readonly MinimalPair[]; lang: LanguageCode; locale: string }) {
   // Shuffled once per mount (the screen remounts this component when the language or accent changes).
   const [order] = useState(() => shuffled(pairs))
@@ -93,11 +110,7 @@ function MinimalPairPractice({ pairs, lang, locale }: { pairs: readonly MinimalP
   }
 
   return (
-    <div className="card practice-card">
-      <div className="card-heading">
-        <h2>Escucha y elige</h2>
-        {score.total > 0 && <span className="badge">{score.right} de {score.total}</span>}
-      </div>
+    <Fold title="Escucha y elige" icon={Ear} badge={score.total > 0 && <span className="badge fold-badge">{score.right} de {score.total}</span>}>
       <p className="card-meaning">Pulsa «Escuchar» y elige la palabra que oyes.</p>
       <button className="primary-action" type="button" onClick={() => speak(current.words[secret], locale, 0.85)}><Volume2 size={20} aria-hidden="true" />Escuchar</button>
       <div className="pair-options" role="group" aria-label="¿Qué palabra has oído?">
@@ -137,7 +150,7 @@ function MinimalPairPractice({ pairs, lang, locale }: { pairs: readonly MinimalP
           )}
         </>
       )}
-    </div>
+    </Fold>
   )
 }
 
@@ -147,8 +160,7 @@ function FreePractice({ lang, locale }: { lang: LanguageCode; locale: string }) 
   const value = text.trim()
 
   return (
-    <div className="card practice-card">
-      <h2>Practica cualquier frase</h2>
+    <Fold title="Practica cualquier frase" icon={MicVocal}>
       <label className="sr-only" htmlFor="practice-text">Frase en {languageName(lang).toLowerCase()}</label>
       <textarea id="practice-text" className="text-area" lang={lang} rows={2} value={text} onChange={event => { setText(event.target.value); recognition.reset() }} placeholder={`Escribe algo en ${languageName(lang).toLowerCase()}`} maxLength={300} />
       <div className="practice-actions">
@@ -159,7 +171,7 @@ function FreePractice({ lang, locale }: { lang: LanguageCode; locale: string }) 
           : <button className="secondary-button" type="button" disabled={!value} onClick={() => void recognition.start(value)}><Mic size={16} aria-hidden="true" />Decirla</button>)}
       </div>
       <HeardMessage heard={recognition.heard} lang={lang} />
-    </div>
+    </Fold>
   )
 }
 

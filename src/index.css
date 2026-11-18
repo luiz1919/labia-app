@@ -154,6 +154,9 @@ input::placeholder { color: #8c8186; }
 .fold-summary::-webkit-details-marker { display: none; }
 .fold-title { display: flex; align-items: baseline; flex-wrap: wrap; gap: 2px 6px; font-size: 17px; }
 .fold-title .not-equal { padding-inline: 2px; }
+.practice-fold .fold-summary { gap: 14px; padding-left: 16px; }
+.practice-fold .fold-title { flex: 1; }
+.fold-badge { flex: 0 0 auto; }
 .fold-chevron { flex: 0 0 auto; color: var(--muted); transition: transform .15s; }
 .fold-card[open] .fold-chevron { transform: rotate(180deg); }
 .fold-body { display: flex; flex-direction: column; gap: 12px; padding: 2px 18px 18px; }
