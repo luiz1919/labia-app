@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { signOut } from 'firebase/auth'
 import type { User } from 'firebase/auth'
-import { ArrowLeft, LogOut, Settings } from 'lucide-react'
+import { ArrowLeft, Settings } from 'lucide-react'
 import { useAuthUser, useFeedbackAdmin } from 'firebase-app-kit/react'
 import { AboutPage, EnvBanner, FeedbackButton, SyncStatus } from 'firebase-app-kit/ui'
 import { ABOUT } from './about'
@@ -56,7 +56,7 @@ function useScreen() {
   return route
 }
 
-function Home({ user, loggingOut, onLogout }: { user: User; loggingOut: boolean; onLogout: () => void }) {
+function Home({ user, loggingOut, logoutError, onLogout }: { user: User; loggingOut: boolean; logoutError: string; onLogout: () => void }) {
   const settings = useUserSettings(user.uid)
   const ai = useAiSettings(user.uid)
   // Read here because "Buscar", "Aprender" and "Expresiones" all show them.
@@ -95,7 +95,6 @@ function Home({ user, loggingOut, onLogout }: { user: User; loggingOut: boolean;
           <FeedbackButton db={db} user={user} appName="Labia" build={BUILD_INFO} githubRepo="luiz1919/labia-app" environment={environment} />
           <SyncStatus state={settings.syncState} error={settings.error} details={SYNC_DETAILS} />
           <a className="icon-button" href="#/ajustes" aria-label="Ajustes" title="Ajustes" aria-current={screen === 'ajustes' || screen === 'acerca' ? 'page' : undefined}><Settings size={20} /></a>
-          <button className="icon-button" type="button" onClick={onLogout} disabled={loggingOut} aria-label="Cerrar sesión" title="Cerrar sesión"><LogOut size={20} /></button>
         </div>
       </header>
       <main>
@@ -113,7 +112,7 @@ function Home({ user, loggingOut, onLogout }: { user: User; loggingOut: boolean;
         {screen === 'leer' && <ReadAloudScreen settings={ai.settings} ready={ai.ready} />}
         {screen === 'despensa' && <PantryScreen uid={user.uid} pair={pair} settings={ai.settings} onSearch={searchFor} />}
         {screen === 'asistente' && <AssistantScreen pair={pair} settings={ai.settings} ready={ai.ready} onSearch={searchFor} />}
-        {screen === 'ajustes' && <SettingsScreen pair={pair} settings={ai.settings} actions={ai.actions} error={ai.error} />}
+        {screen === 'ajustes' && <SettingsScreen pair={pair} settings={ai.settings} actions={ai.actions} error={ai.error} email={user.email} signingOut={loggingOut} signOutError={logoutError} onSignOut={onLogout} />}
         {screen === 'acerca' && <AboutPage {...ABOUT} environment={environment} canSwitchEnvironment={isAdmin} testData={testData} back={{ label: 'Ajustes', href: '#/ajustes' }} />}
       </main>
       <BottomNav current={tab} />
@@ -144,8 +143,7 @@ export default function App() {
   return (
     <SpeechProvider>
       <EnginePreferencesProvider>
-        {logoutError && <p className="error-message session-error" role="alert">{logoutError}</p>}
-        <Home key={user.uid} user={user} loggingOut={loggingOut} onLogout={() => { void logout() }} />
+        <Home key={user.uid} user={user} loggingOut={loggingOut} logoutError={logoutError} onLogout={() => { void logout() }} />
       </EnginePreferencesProvider>
     </SpeechProvider>
   )

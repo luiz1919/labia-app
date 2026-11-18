@@ -217,6 +217,9 @@ input::placeholder { color: #8c8186; }
 .segmented button { min-height: 40px; border: 0; border-radius: 9px; background: transparent; color: var(--muted); font-size: 14px; font-weight: 600; }
 .segmented button[aria-selected='true'], .segmented button[aria-checked='true'] { background: #fff; color: var(--accent); box-shadow: 0 1px 3px rgb(42 35 38 / 12%); }
 .settings-group { display: flex; flex-direction: column; gap: 14px; padding-top: 6px; }
+.account { display: flex; align-items: center; gap: 12px; color: var(--accent); }
+.account-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; font-size: 13px; color: var(--muted); }
+.account-text strong { overflow-wrap: anywhere; font-size: 15px; color: #2a2024; }
 .settings-group + .settings-group { padding-top: 22px; border-top: 1px solid var(--border); }
 .chip-icon { display: inline-flex; align-items: center; gap: 6px; }
 
@@ -376,7 +379,7 @@ select.form-input { padding-block: 6px; }
 @media (max-width: 640px) {
   .app-header { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; padding: 12px 20px; }
   .header-brand { justify-content: space-between; width: 100%; }
-  .account-actions { display: grid; grid-template-columns: minmax(0, 1fr) repeat(4, 40px); width: 100%; }
+  .account-actions { display: grid; grid-template-columns: minmax(0, 1fr) repeat(3, 40px); width: 100%; }
   .account-email { width: 100%; max-width: 100%; }
   main { padding-top: 20px; padding-inline: 16px; }
   h1 { font-size: 25px; }

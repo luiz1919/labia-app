@@ -1,4 +1,4 @@
-import { ArrowDown, ArrowUp, ChevronRight, Info, Volume2 } from 'lucide-react'
+import { ArrowDown, ArrowUp, ChevronRight, CircleUserRound, Info, LogOut, Volume2 } from 'lucide-react'
 import type { AiSettings, AiSettingsActions } from 'firebase-app-kit/ai'
 import { AiSettingsPanel } from 'firebase-app-kit/ui'
 import { ENGINES, engineUnavailable } from '../engines'
@@ -46,13 +46,40 @@ function EngineOrder({ pair, settings }: { pair: LanguagePair; settings: AiSetti
   )
 }
 
-/** "Ajustes": search engines and voices (this device), the AI keys (the account) and the link to "Acerca de". */
-export default function SettingsScreen({ pair, settings, actions, error }: { pair: LanguagePair; settings: AiSettings; actions: AiSettingsActions; error: string }) {
+interface Props {
+  pair: LanguagePair
+  settings: AiSettings
+  actions: AiSettingsActions
+  error: string
+  /** The signed-in account and its "Cerrar sesión" button. */
+  email: string | null
+  signingOut: boolean
+  signOutError: string
+  onSignOut: () => void
+}
+
+/** "Ajustes": the account and "Cerrar sesión", search engines and voices (this device), the AI keys (the account) and the link to "Acerca de". */
+export default function SettingsScreen({ pair, settings, actions, error, email, signingOut, signOutError, onSignOut }: Props) {
   const { accents, setAccent } = useSpeech()
 
   return (
     <section className="screen" aria-labelledby="settings-title">
       <h1 id="settings-title">Ajustes</h1>
+
+      <section className="settings-group" aria-labelledby="account-title">
+        <h2 id="account-title">Cuenta</h2>
+        <div className="account">
+          <CircleUserRound size={40} aria-hidden="true" />
+          <div className="account-text">
+            <strong>{email ?? 'Sin cuenta'}</strong>
+            <span>Sesión iniciada con correo y contraseña</span>
+          </div>
+        </div>
+        <button className="secondary-button danger-button" type="button" onClick={onSignOut} disabled={signingOut}>
+          <LogOut size={18} aria-hidden="true" />{signingOut ? 'Cerrando sesión…' : 'Cerrar sesión'}
+        </button>
+        {signOutError && <p className="error-message" role="alert">{signOutError}</p>}
+      </section>
 
       <section className="settings-group" aria-labelledby="engines-title">
         <h2 id="engines-title">Motores de búsqueda</h2>
