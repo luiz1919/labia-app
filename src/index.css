@@ -80,7 +80,7 @@ main { flex: 1; min-width: 0; width: min(100%, 760px); margin: 0 auto; padding: 
 .secondary-button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 40px; padding: 8px 14px; border: 1px solid var(--border); border-radius: 8px; background: #fff; color: var(--accent); font-size: 14px; font-weight: 500; }
 .icon-button { width: 40px; height: 40px; flex: 0 0 40px; border: 0; border-radius: 8px; display: inline-grid; place-items: center; background: transparent; color: var(--muted); }
 .icon-button:hover:not(:disabled) { background: var(--accent-soft); color: var(--accent); }
-.search-form input, .filter-field input, .language-select select { width: 100%; max-width: 100%; min-width: 0; height: 46px; border: 1px solid var(--input-border); border-radius: 8px; background: #fff; padding: 10px 12px; color: inherit; font-size: 16px; }
+.language-select select { width: 100%; max-width: 100%; min-width: 0; height: 46px; border: 1px solid var(--input-border); border-radius: 8px; background: #fff; padding: 10px 12px; color: inherit; font-size: 16px; }
 input::placeholder { color: #8c8186; }
 .error-message { padding: 14px 16px; margin-bottom: 20px; border-left: 3px solid var(--danger); background: #fbeeea; color: #873a32; font-size: 14px; overflow-wrap: anywhere; }
 .chip { min-height: 40px; padding: 4px 14px; border: 1px solid var(--border); border-radius: 999px; background: #fff; color: var(--accent); font-size: 14px; }
@@ -98,15 +98,12 @@ input::placeholder { color: #8c8186; }
 /* Screens and lists */
 .screen { display: flex; flex-direction: column; gap: 18px; }
 .screen-intro { color: var(--muted); font-size: 15px; line-height: 1.5; margin-top: -8px; }
-.search-form input[type='search'] { height: 54px; font-size: 18px; border-radius: 12px; padding-inline: 16px; }
-.search-form { position: relative; }
-.search-form input[type='search'] { padding-right: 52px; }
-.search-form input[type='search']::-webkit-search-cancel-button { display: none; }
-.search-clear { position: absolute; top: 7px; right: 7px; display: grid; place-items: center; width: 40px; height: 40px; border: 0; border-radius: 8px; background: transparent; color: var(--muted); }
-.search-clear:hover { background: var(--accent-soft); color: var(--accent); }
-.filter-field { position: relative; }
-.filter-field svg { position: absolute; left: 14px; top: 14px; color: var(--muted); pointer-events: none; }
-.filter-field input { padding-left: 42px; border-radius: 12px; }
+/* firebase-app-kit's SearchField, with Labia's rounder fields; the word search is the big one */
+.kit-search input.kit-input { border-radius: 12px; }
+.search-form .kit-search input.kit-input { height: 54px; font-size: 18px; }
+.search-form .kit-search > .kit-icon { left: 16px; }
+.search-form .kit-search input.kit-input { padding-left: 46px; }
+.search-form .kit-search .kit-search-clear { top: 7px; right: 7px; }
 .result-count { color: var(--muted); font-size: 13px; margin-top: -6px; }
 .result-group { display: flex; flex-direction: column; }
 .card-list { display: flex; flex-direction: column; gap: 12px; }

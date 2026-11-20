@@ -10,7 +10,8 @@ Unreleased by hand when you want them clearer.
 
 ## Unreleased
 
-_Nothing yet._
+- The word search, the filters of "Expresiones" and "Falsos amigos" and the favorites filter use firebase-app-kit's shared search field: a magnifier and an × that clears the text (also with Escape), the same on every phone and browser. Needs firebase-app-kit v0.22.0.
+- No Firestore rules change in this version.
 
 ## [v0.14.0] - 2026-11-19
 

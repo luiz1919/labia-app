@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import type { ChangeEvent, FormEvent, ReactNode } from 'react'
 import { Camera, ClipboardPaste, ExternalLink, LoaderCircle, Play, X } from 'lucide-react'
 import type { AiSettings } from 'firebase-app-kit/ai'
+import { SearchField } from 'firebase-app-kit/ui'
 import { askJson, errorMessage } from '../askAssistant'
 import { parseLines, photoTextRequest } from '../assistant'
 import ConfusableCard from '../components/ConfusableCard'
@@ -204,7 +205,7 @@ export default function SearchScreen({ uid, pair, term, onTermChange, onPairChan
     if (document.activeElement instanceof HTMLElement) document.activeElement.blur()
   }
 
-  // The "x" empties the field, drops the pending answers and keeps the keyboard for the next word.
+  // Emptying the field drops the pending answers and keeps the keyboard for the next word.
   function clearTerm() {
     onTermChange('')
     settleNow('')
@@ -225,9 +226,9 @@ export default function SearchScreen({ uid, pair, term, onTermChange, onPairChan
     <section className="screen" aria-labelledby="search-title">
       <h1 id="search-title">¿Cómo se dice?</h1>
       <form className="search-form" role="search" onSubmit={submit}>
-        <label className="sr-only" htmlFor="search-term">Palabra, verbo o expresión en {sourceName}</label>
-        <input id="search-term" type="search" lang={pair.source} value={term} onChange={event => onTermChange(event.target.value)} placeholder={`Palabra, verbo o expresión en ${sourceName}`} autoComplete="off" autoCapitalize="none" spellCheck={false} enterKeyHint="search" maxLength={200} />
-        {term && <button className="search-clear" type="button" onClick={clearTerm} aria-label="Borrar lo escrito" title="Borrar"><X size={18} aria-hidden="true" /></button>}
+        {/* Emptying it (the ×, Escape or deleting everything) also drops the pending answers. */}
+        <SearchField id="search-term" lang={pair.source} value={term} onChange={value => (value ? onTermChange(value) : clearTerm())}
+          placeholder={`Palabra, verbo o expresión en ${sourceName}`} autoCapitalize="none" spellCheck={false} maxLength={200} />
       </form>
       <TextSources settings={settings} onText={onTermChange} />
       {links.length === 0 ? (

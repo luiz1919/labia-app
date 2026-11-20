@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import { ChevronDown, Search, Star } from 'lucide-react'
+import { ChevronDown, Star } from 'lucide-react'
+import { SearchField } from 'firebase-app-kit/ui'
 import { filterFavorites } from '../favorites'
 import type { Favorite, FavoriteOrder } from '../favorites'
 import type { LanguagePair } from '../languages'
@@ -57,11 +58,7 @@ export default function FavoritesSection({ favorites, pair, onOpen }: { favorite
           ) : (
             <>
               <div className="favorites-tools">
-                <div className="filter-field">
-                  <Search size={18} aria-hidden="true" />
-                  <label className="sr-only" htmlFor="favorites-filter">Buscar en favoritos</label>
-                  <input id="favorites-filter" type="search" value={filter} onChange={event => { setFilter(event.target.value); setShown(PAGE) }} placeholder="Buscar en favoritos" autoComplete="off" autoCapitalize="none" spellCheck={false} />
-                </div>
+                <SearchField id="favorites-filter" value={filter} onChange={value => { setFilter(value); setShown(PAGE) }} placeholder="Buscar en favoritos" autoCapitalize="none" spellCheck={false} />
                 <div className="segmented" role="tablist" aria-label="Orden">
                   <button type="button" role="tab" aria-selected={order === 'recent'} onClick={() => setOrder('recent')}>Recientes</button>
                   <button type="button" role="tab" aria-selected={order === 'alphabetical'} onClick={() => setOrder('alphabetical')}>A–Z</button>

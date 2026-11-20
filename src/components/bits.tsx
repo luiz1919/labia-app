@@ -1,6 +1,5 @@
 // Small pieces shared by the content cards.
-import { useId } from 'react'
-import { Search } from 'lucide-react'
+import { SearchField } from 'firebase-app-kit/ui'
 import { REGION_LABELS, REGISTER_LABELS } from '../data/types'
 import type { Region, Register, Translations } from '../data/types'
 import type { LanguageCode } from '../languages'
@@ -33,12 +32,5 @@ export function Example({ example, first, second }: { example?: Translations; fi
 
 /** Text field that filters a list on screen. */
 export function FilterField({ value, onChange, label, lang }: { value: string; onChange: (value: string) => void; label: string; lang?: string }) {
-  const id = useId()
-  return (
-    <div className="filter-field">
-      <label className="sr-only" htmlFor={id}>{label}</label>
-      <Search size={18} aria-hidden="true" />
-      <input id={id} type="search" lang={lang} value={value} onChange={event => onChange(event.target.value)} placeholder={label} autoComplete="off" autoCapitalize="none" spellCheck={false} enterKeyHint="search" />
-    </div>
-  )
+  return <SearchField value={value} onChange={onChange} placeholder={label} lang={lang} autoCapitalize="none" spellCheck={false} />
 }
