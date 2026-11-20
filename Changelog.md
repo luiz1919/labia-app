@@ -10,6 +10,10 @@ Unreleased by hand when you want them clearer.
 
 ## Unreleased
 
+_Nothing yet._
+
+## [v0.14.1] - 2026-11-21
+
 - The word search, the filters of "Expresiones" and "Falsos amigos" and the favorites filter use firebase-app-kit's shared search field: a magnifier and an × that clears the text (also with Escape), the same on every phone and browser. Needs firebase-app-kit v0.22.0.
 - No Firestore rules change in this version.
 
@@ -179,6 +183,7 @@ Unreleased by hand when you want them clearer.
 - Login, "Acerca de" (About) and the sync status come from firebase-app-kit's shared UI.
 - Installable PWA that opens offline.
 
+[v0.14.1]: https://github.com/luiz1919/labia-app/compare/v0.14.0...v0.14.1
 [v0.14.0]: https://github.com/luiz1919/labia-app/compare/v0.13.0...v0.14.0
 [v0.13.0]: https://github.com/luiz1919/labia-app/compare/v0.12.0...v0.13.0
 [v0.12.0]: https://github.com/luiz1919/labia-app/compare/v0.11.0...v0.12.0
